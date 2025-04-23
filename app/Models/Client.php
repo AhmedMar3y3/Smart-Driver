@@ -20,11 +20,18 @@ class Client extends Authenticatable
         'phone',
         'email',
         'password',
+        'isSubscribed',
+        'subscription_type',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'isSubscribed' => 'boolean',
+        'subscription_type' => 'integer',
     ];
 
     public function setPasswordAttribute($value)
@@ -41,5 +48,15 @@ class Client extends Authenticatable
             'password' => Hash::make(uniqid()),
             'phone' => 'google',
         ]);
+    }
+
+    public function cars()
+    {
+        return $this->hasMany(Car::class);
+    }
+
+    public function plates()
+    {
+        return $this->hasMany(Plate::class);
     }
 }

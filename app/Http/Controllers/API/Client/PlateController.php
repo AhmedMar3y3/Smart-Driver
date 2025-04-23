@@ -9,6 +9,7 @@ use App\Http\Resources\API\Client\PlateDetailsResource;
 use App\Http\Resources\API\Client\PlatesResource;
 use App\Traits\HttpResponses;
 use App\Models\Plate;
+use Exception;
 
 class PlateController extends Controller
 {
@@ -32,7 +33,15 @@ class PlateController extends Controller
     }
     public function store(StorePlateRequest $request)
     {
-        Plate::create($request->validated() + ['client_id' => Auth('client')->user()->id]);
-        return $this->successResponse('تم اضافة اللوحة بنجاح');
+        $client = Auth('client')->user();
+        try {
+            // if (!$client->isSubscribed && $client->plates()->count() >= 2) {
+            //     throw new Exception('لا يمكنك اضافة لوحة جديدة, يجب عليك الاشتراك في باقة مميزة');
+            // }
+            Plate::create($request->validated() + ['client_id' => $client->id]);
+            return $this->successResponse('تم اضافة اللوحة بنجاح');
+        } catch (Exception $e) {
+            return $this->failureResponse($e->getMessage());
+        }
     }
 }

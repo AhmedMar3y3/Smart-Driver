@@ -17,7 +17,8 @@ class FilterCarsRequest extends BaseRequest
         return [
             'price_from' => 'nullable|numeric|min:0',
             'price_to' => 'nullable|numeric|min:0',
-            'brand_id' => 'nullable|exists:brands,id',
+            'brand_id' => 'nullable',
+            'brand_id.*' => 'exists:brands,id',
             'year_from' => 'nullable|integer|min:1900|max:' . date('Y'),
             'year_to' => 'nullable|integer|min:1900|max:' . date('Y'),
             'type' => 'nullable|in:0,1',

@@ -20,8 +20,9 @@ class filterCarService
             return $q->where('price', '<=', $filters['price_to']);
         });
 
-        $query->when(isset($filters['brand_id']), function ($q) use ($filters) {
-            return $q->where('brand_id', $filters['brand_id']);
+        $query->when(!empty($filters['brand_id']), function ($q) use ($filters) {
+            $brandIds = is_array($filters['brand_id']) ? $filters['brand_id'] : [$filters['brand_id']];
+            return $q->whereIn('brand_id', $brandIds);
         });
 
         $query->when(isset($filters['year_from']), function ($q) use ($filters) {
