@@ -15,7 +15,8 @@ Route::middleware('auth.admin')->group(function () {
     Route::post('logout',[AuthController::class, 'logout']);
 
     // brands
-    Route::apiResource('brands', BrandsController::class);
+    Route::apiResource('brands', BrandsController::class)->except(['update']);
+    Route::post('brands/{id}', [BrandsController::class, 'update']);
 
     // cars
     Route::apiResource('cars',   CarController::class);
