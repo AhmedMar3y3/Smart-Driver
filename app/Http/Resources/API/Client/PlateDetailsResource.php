@@ -24,6 +24,7 @@ class PlateDetailsResource extends JsonResource
             'address' => $this->address,
             'client name' => $this->client->name,
             'client email' => $this->client->email,
+            'type' => $this->type,
         ];
     }
 }

@@ -19,6 +19,7 @@ class PlatesResource extends JsonResource
             'number' => $this->number,
             'price' => $this->price ?? 'الرجاء التواصل مع المعلن لمعرفة السعر',
             'emirate' => $this->emirate->name,
+            'type' => $this->type,
         ];
     }
 }

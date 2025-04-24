@@ -20,6 +20,18 @@ class StorePlateRequest extends BaseRequest
             'phone'      => 'required|string',
             'address'    => 'nullable|string',
             'emirate_id' => 'required|exists:emirates,id',
+            'type'       => [
+            'required',
+            function ($attribute, $value, $fail) {
+                $emirateId = request()->input('emirate_id');
+                if ($value === 'classic' && !in_array($emirateId, [1, 2, 3])) {
+                $fail('The selected type is invalid for the given emirate_id.');
+                }
+                if ($value === 'modern' && in_array($emirateId, [1, 2, 3])) {
+                }
+            },
+            'in:modern,classic',
+            ],
         ];
     }
 }

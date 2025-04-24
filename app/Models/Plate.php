@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\PlateType;
 
 class Plate extends Model
 {
@@ -16,12 +16,14 @@ class Plate extends Model
         'status',
         'phone',
         'address',
+        'type',
         'emirate_id',
         'client_id',
     ];
 
     protected $casts = [
         'status' => 'integer',
+        // 'type' => PlateType::class,
     ];
 
     public function client()
