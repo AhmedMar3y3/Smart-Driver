@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Client\CarController;
 use App\Http\Controllers\API\Client\AuthController;
+use App\Http\Controllers\API\Client\HeroController;
 use App\Http\Controllers\API\Client\PlateController;
 use App\Http\Controllers\Controller;
 
@@ -27,5 +28,8 @@ Route::middleware(['auth.client'])->group(function () {
     Route::get('/plates',      [PlateController::class, 'index']);
     Route::get('/plates/{id}', [PlateController::class, 'show']);
     Route::post('/plates',     [PlateController::class, 'store']);
+
+    // Hero Routes
+    Route::get('/hero', [HeroController::class, 'getHero']);
 });
 
