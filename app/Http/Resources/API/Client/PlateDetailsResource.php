@@ -19,6 +19,7 @@ class PlateDetailsResource extends JsonResource
             'number' => $this->number,
             'price' => $this->price ?? 'الرجاء التواصل مع المعلن لمعرفة السعر',
             'emirate' => $this->emirate->name,
+            'created_at' => $this->created_at->format('Y-m-d'),
             'phone' => $this->phone,
             'address' => $this->address,
             'client name' => $this->client->name,
