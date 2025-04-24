@@ -29,7 +29,13 @@ class CarController extends Controller
         $filters = $request->validated();
         $query = (new filterCarService)->getFilteredCarsQuery($filters);
         $cars = $query->get();
-        return $this->successWithDataResponse(CarsResource::collection($cars));
+        $count = $cars->count();
+        return response()->json([
+            "key"=> "success",
+            "msg"=> "تم بنجاح",
+            'data' => CarsResource::collection($cars),
+            'count' => $count
+        ]);
     }
 
     public function show($id)
@@ -45,7 +51,7 @@ class CarController extends Controller
     {
         $validatedData = $request->validated();
         $files = $request->file('images');
-    
+
         try {
             $this->carService->createCarWithImages($validatedData, $files);
             return $this->successResponse('تم اضافة السيارة بنجاح');

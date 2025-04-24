@@ -23,6 +23,9 @@ class CarsResource extends JsonResource
             'distance' => $this->distance,
             'type' => $this->type->formattedName(),
             'created_from' => $this->created_at->diffForHumans(),
+            'image' => $this->images->pluck('image')->map(function ($image) {
+                return url($image);
+            })->first(),
         ];
     }
 }
