@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Admin\Brand\StoreBrandRequest;
+use App\Http\Requests\API\Admin\Brand\UpdateBrandRequest;
 use App\Http\Resources\API\Admin\BrandResource;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -32,6 +33,16 @@ class BrandsController extends Controller
 
         Brand::create($request->validated());
         return $this->successResponse();
+    }
+
+    public function update(UpdateBrandRequest $request, $id)
+    {
+        $brand = Brand::find($id);
+        if (!$brand) {
+            return $this->failureResponse('العلامة التجارية غير موجودة');
+        }
+        $brand->update($request->validated());
+        return $this->successResponse('تم تحديث العلامة التجارية بنجاح');
     }
 
     public function destroy($id)
