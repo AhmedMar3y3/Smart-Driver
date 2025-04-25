@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Client\CarController;
 use App\Http\Controllers\API\Client\AuthController;
 use App\Http\Controllers\API\Client\HeroController;
 use App\Http\Controllers\API\Client\PlateController;
+use App\Http\Controllers\API\Client\SubscriptionController;
 use App\Http\Controllers\Controller;
 
 // Dropdown routes
@@ -29,6 +30,9 @@ Route::middleware(['auth.client'])->group(function () {
 
     // Plate Routes
     Route::post('/plates',     [PlateController::class, 'store']);
+
+    // Subscription Routes
+    Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
 
     // Hero Routes
 });
