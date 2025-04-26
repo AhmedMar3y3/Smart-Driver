@@ -23,8 +23,8 @@ class PlateDetailsResource extends JsonResource
             'created_at' => $this->created_at->format('Y-m-d'),
             'phone' => $this->phone,
             'address' => $this->address,
-            'client name' => $this->client->name,
-            'client email' => $this->client->email,
+            'client_name' => $this->client->name,
+            'client_email' => $this->client->email,
             'type' => $this->type,
         ];
     }

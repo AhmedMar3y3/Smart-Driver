@@ -31,8 +31,8 @@ class CarDetailsResource extends JsonResource
             }),
             'phone' => $this->phone,
             'address' => $this->address,
-            'client name' => $this->client->name,
-            'client email' => $this->client->email,
+            'client_name' => $this->client->name,
+            'client_email' => $this->client->email,
         ];
     }
 }
