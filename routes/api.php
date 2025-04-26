@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Client\CarController;
 use App\Http\Controllers\API\Client\AuthController;
 use App\Http\Controllers\API\Client\HeroController;
 use App\Http\Controllers\API\Client\PlateController;
+use App\Http\Controllers\API\Client\ProfileController;
 use App\Http\Controllers\API\Client\SubscriptionController;
 use App\Http\Controllers\Controller;
 
@@ -25,6 +26,11 @@ Route::get('/plates/{id}', [PlateController::class, 'show']);
 Route::get('/hero', [HeroController::class, 'getHero']);
 Route::middleware(['auth.client'])->group(function () {
     Route::post('/logout',              [AuthController::class, 'logout']);
+
+    //profile routes
+    Route::get('/profile',          [ProfileController::class, 'getProfile']);
+    Route::post('/update-profile',  [ProfileController::class, 'updateProfile']);
+    Route::post('/change-password', [ProfileController::class, 'changePassword']);
 
     
     Route::post('/cars',     [CarController::class, 'store']);

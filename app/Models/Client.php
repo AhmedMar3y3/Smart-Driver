@@ -59,4 +59,14 @@ class Client extends Authenticatable
     {
         return $this->hasMany(Plate::class);
     }
+    public function changePassword(string $newPassword): void
+    {
+        $this->password = $newPassword;
+        $this->save();
+    }
+
+    public function verifyPassword(string $password): bool
+    {
+        return Hash::check($password, $this->password);
+    }
 }
