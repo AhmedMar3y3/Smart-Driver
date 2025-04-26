@@ -17,7 +17,6 @@ class StoreCarRequest extends BaseRequest
         return [
             'name'            => 'required|string',
             'brand_id'        => 'required|integer|exists:brands,id',
-            'category'        => 'required|string',
             'year'            => 'required|integer|before_or_equal:'.date('Y'),
             'distance'        => 'required|integer',
             'color'           => 'required|string',
@@ -28,6 +27,7 @@ class StoreCarRequest extends BaseRequest
             'address'         => 'required|string',
             'images'          => 'required|array',
             'images.*'        => 'required|image|mimes:png,jpg,jpeg',
+            'category_id'     => 'required|exists:categories,id',
         ];
     }
 }

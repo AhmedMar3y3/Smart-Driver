@@ -17,7 +17,7 @@ class CarDetailsResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'category' => $this->category,
+            'category' => $this->category->name,
             'price' => $this->price,
             'year' => $this->year,
             'distance' => $this->distance,

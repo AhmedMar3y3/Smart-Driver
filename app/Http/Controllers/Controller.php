@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Emirate;
+use App\Models\Category;
 use App\Traits\HttpResponses;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -22,5 +23,10 @@ class Controller extends BaseController
     {
         $brands = Brand::get(['id', 'name', 'logo']);
         return $this->successWithDataResponse($brands);
+    }
+    public function categories()
+    {
+        $categories = Category::select('id', 'name')->get();
+        return $this->successWithDataResponse($categories);
     }
 }

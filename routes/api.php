@@ -10,9 +10,10 @@ use App\Http\Controllers\API\Client\ProfileController;
 use App\Http\Controllers\API\Client\SubscriptionController;
 
 // Dropdown routes
-Route::get('/emirates',[Controller::class, 'emirates']);
-Route::get('/brands',  [Controller::class, 'brands']);
-Route::get('/hero', [HeroController::class, 'getHero']);
+Route::get('emirates',  [Controller::class, 'emirates']);
+Route::get('brands',    [Controller::class, 'brands']);
+Route::get('hero',      [HeroController::class, 'getHero']);
+Route::get('categories',[Controller::class, 'categories']);
 
 // Auth routes
 Route::post('/register',            [AuthController::class, 'register']);

@@ -25,6 +25,7 @@ class Car extends Model
         'address',
         'brand_id',
         'client_id',
+        'category_id',
     ];
     protected $casts = [
         'type' => CarType::class,
@@ -44,5 +45,10 @@ class Car extends Model
     public function images()
     {
         return $this->hasMany(CarImage::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
