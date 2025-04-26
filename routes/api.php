@@ -19,6 +19,7 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 
 Route::get('/cars',      [CarController::class, 'index']);
 Route::get('/cars/{id}', [CarController::class, 'show']);
+Route::get('/related-cars/{brandId}', [CarController::class, 'relatedCars']);
 Route::get('/plates',      [PlateController::class, 'index']);
 Route::get('/plates/{id}', [PlateController::class, 'show']);
 Route::get('/hero', [HeroController::class, 'getHero']);
@@ -36,4 +37,3 @@ Route::middleware(['auth.client'])->group(function () {
 
     // Hero Routes
 });
-

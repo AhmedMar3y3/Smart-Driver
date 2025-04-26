@@ -59,4 +59,18 @@ class CarController extends Controller
             return $this->failureResponse($e->getMessage());
         }
     }
+
+    public function relatedCars($brandId){
+        $cars = Car::where('brand_id', $brandId)
+            ->where('status', Status::PENDING->value)
+            ->latest()
+            ->take(6)
+            ->get();  
+
+        if ($cars->isEmpty()) {
+            return $this->successResponse('لا توجد سيارات متاحة لهذا الماركة');
+        }
+
+        return $this->successWithDataResponse(CarsResource::collection($cars));
+    }
 }
