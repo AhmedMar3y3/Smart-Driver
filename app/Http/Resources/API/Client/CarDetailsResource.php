@@ -24,6 +24,8 @@ class CarDetailsResource extends JsonResource
             'type' => $this->type->formattedName(),
             'created_from' => $this->created_at->diffForHumans(),
             'additional_info' => $this->additional_info,
+            'brand_id' => $this->brand_id,
+            'brand' => $this->brand->name,
             'images' => $this->images->pluck('image')->map(function ($image) {
                 return url($image);
             }),
