@@ -14,24 +14,20 @@ class StorePlateRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'number'     => 'required|string|unique:plates,number|regex:/^\d{1,6}$/',
             'price'      => 'nullable|numeric',
             'phone'      => 'required|string',
             'address'    => 'nullable|string',
             'emirate_id' => 'required|exists:emirates,id',
-            'type'       => [
-            'required',
-            function ($attribute, $value, $fail) {
-                $emirateId = request()->input('emirate_id');
-                if ($value === 'classic' && !in_array($emirateId, [1, 2, 3])) {
-                $fail('The selected type is invalid for the given emirate_id.');
-                }
-                if ($value === 'modern' && in_array($emirateId, [1, 2, 3])) {
-                }
-            },
-            'in:modern,classic',
-            ],
         ];
+
+        if (in_array($this->emirate_id, [1, 2, 3])) {
+            $rules['type'] = 'required|in:modern,classic';
+        } else {
+            $rules['type'] = 'prohibited';
+        }
+
+        return $rules;
     }
 }
