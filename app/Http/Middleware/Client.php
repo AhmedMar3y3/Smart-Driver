@@ -19,11 +19,11 @@ class Client
         $client = Auth::guard('client')->user();
         
         if (!$client) {
-            logger('client middleware: No authenticated client.');
-            return response()->json(['message' => 'Unauthorizes: clients only can access this route'], 403);
+            logger('client middleware: لا يوجد عميل مصدق.');
+            return response()->json(['message' => 'غير مصرح: يمكن للعملاء فقط الوصول إلى هذا المسار'], 403);
         }
-    
-        logger('client middleware: client authenticated.', ['client' => $client]);
+        
+        logger('client middleware: العميل مصدق.', ['client' => $client]);
         return $next($request);
     }
 }

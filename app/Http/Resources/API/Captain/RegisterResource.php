@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources\API\Captain;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AuthResource extends JsonResource
-{
+class RegisterResource extends JsonResource
+{ 
     private $token;
-
     public function setToken($token)
     {
         $this->token = $token;
@@ -21,10 +21,10 @@ class AuthResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'is_approved' => $this->is_approved,
-            'is_subscribed' => $this->is_subscribed,
-            'completed_info' => $this->completed_info,
+            'is_approved' => false,
+            'is_subscribed' => false,
+            'completed_info' => false,
             'token' => $this->token,
         ];
     }
-} 
+}

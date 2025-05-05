@@ -6,20 +6,11 @@ use App\Models\Car;
 use App\Helpers\ImageUploadHelper;
 use App\Traits\HttpResponses;
 use Illuminate\Http\UploadedFile;
-use Exception;
 
 class StoreCarService
 {
     use HttpResponses;
 
-    /**
-     * Create a new car along with its images.
-     *
-     * @param array $validatedData
-     * @param array $files
-     * @return \App\Models\Car
-     * @throws \Exception
-     */
     public function createCarWithImages(array $validatedData, array $files): Car
     {
         $client = Auth('client')->user();

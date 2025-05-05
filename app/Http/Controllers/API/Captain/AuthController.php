@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\API\Captain;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Captain\Captain\LoginCaptainRequest;
-use App\Http\Requests\API\Captain\Captain\RegisterCaptainRequest;
-use App\Http\Resources\API\Captain\AuthResource;
 use App\Models\Captain;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\API\Captain\AuthResource;
+use App\Http\Resources\API\Captain\RegisterResource;
+use App\Http\Requests\API\Captain\Captain\LoginCaptainRequest;
+use App\Http\Requests\API\Captain\Captain\RegisterCaptainRequest;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthController extends Controller
     {
         $captain = Captain::create($request->validated());
         $token = $captain->createToken('captain-token')->plainTextToken;
-        return $this->successWithDataResponse(AuthResource::make($captain)->setToken($token));
+        return $this->successWithDataResponse(RegisterResource::make($captain)->setToken($token));
     }
 
     public function login(LoginCaptainRequest $request)
@@ -26,9 +27,6 @@ class AuthController extends Controller
         $captain = Captain::where('email', $request->email)->first();
         if (!$captain || !Hash::check($request->password, $captain->password)) {
             return $this->failureResponse('بيانات الدخول غير صحيحة');
-        }
-        if (!$captain->is_approved) {
-            return $this->failureResponse('لم يتم الموافقة على حسابك بعد');
         }
         $token = $captain->createToken('captain-token')->plainTextToken;
         return $this->successWithDataResponse(AuthResource::make($captain)->setToken($token));

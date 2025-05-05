@@ -8,6 +8,8 @@ use App\Http\Controllers\API\Client\HeroController;
 use App\Http\Controllers\API\Client\PlateController;
 use App\Http\Controllers\API\Client\ProfileController;
 use App\Http\Controllers\API\Client\SubscriptionController;
+use App\Http\Controllers\API\Client\ReservationController;
+use App\Http\Controllers\API\Client\ReviewController;
 
 // Dropdown routes
 Route::get('emirates',  [Controller::class, 'emirates']);
@@ -28,6 +30,11 @@ Route::get('/related-cars/{brandId}',[CarController::class, 'relatedCars']);
 Route::get('/plates',      [PlateController::class, 'index']);
 Route::get('/plates/{id}', [PlateController::class, 'show']);
 
+// Captains Routes
+Route::get('/captains', [ReservationController::class, 'captains']);
+Route::get('/captains/{id}', [ReservationController::class, 'captain']);
+Route::get('/availabilities/{id}', [ReservationController::class, 'captainAvailabilities']);
+Route::get('/captain-reviews/{id}', [ReservationController::class, 'captainReviews']);
 
 Route::middleware(['auth.client'])->group(function () {
     Route::post('/logout',              [AuthController::class, 'logout']);
@@ -43,4 +50,10 @@ Route::middleware(['auth.client'])->group(function () {
 
     // Subscription Routes
     Route::post('/subscribe',  [SubscriptionController::class, 'subscribe']);
+
+    // Reservation Routes
+    Route::post('/reserve-captain', [ReservationController::class, 'reserveCaptain']);
+
+    // Review Routes
+    Route::post('/post-review', [ReviewController::class, 'postReview']);
 });

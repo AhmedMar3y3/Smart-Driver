@@ -22,10 +22,6 @@ class Captain
             return response()->json(['message' => 'غير مصرح: يمكن للمدربين فقط الوصول إلى هذا المسار'], 403);
         }
     
-        if (!$captain->is_approved) {
-            return response()->json(['message' => 'لم يتم الموافقة على حسابك بعد'], 403);
-        }
-    
         return $next($request);
     }
 }

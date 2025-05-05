@@ -30,5 +30,9 @@ Route::middleware('auth.admin')->group(function () {
     Route::get('hero', [HeroController::class, 'getHero']);
 
     // captains
-    Route::post('captains/{id}/approve', [CaptainController::class, 'approve']);
+    Route::get('new-captains',         [CaptainController::class, 'getNewCaptains']);
+    Route::get('approved-captains',    [CaptainController::class, 'getApprovedCaptains']);
+    Route::get('captains/{id}',        [CaptainController::class, 'getCaptain']);
+    Route::post('approve-captain/{id}',[CaptainController::class, 'approve']);
+    Route::delete('captains/{id}',     [CaptainController::class, 'delete']);
 });

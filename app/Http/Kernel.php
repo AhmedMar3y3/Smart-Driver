@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'auth.client' => \App\Http\Middleware\Client::class,
         'auth.admin' => \App\Http\Middleware\Admin::class,
         'auth.captain' => \App\Http\Middleware\Captain::class,
+        'subscription' => \App\Http\Middleware\CheckSubscription::class,
     ];
 }

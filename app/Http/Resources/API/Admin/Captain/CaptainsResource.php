@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Http\Resources\API\Captain;
+namespace App\Http\Resources\API\Admin\Captain;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AuthResource extends JsonResource
+class CaptainsResource extends JsonResource
 {
-    private $token;
-
-    public function setToken($token)
-    {
-        $this->token = $token;
-        return $this;
-    }
-
-    public function toArray($request)
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
@@ -23,8 +21,7 @@ class AuthResource extends JsonResource
             'phone' => $this->phone,
             'is_approved' => $this->is_approved,
             'is_subscribed' => $this->is_subscribed,
-            'completed_info' => $this->completed_info,
-            'token' => $this->token,
+
         ];
     }
-} 
+}

@@ -14,7 +14,7 @@ class LoginCaptainRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
+            'email' => 'required|string|email|exists:captains,email',
             'password' => 'required|string',
         ];
     }

@@ -14,9 +14,10 @@ class RegisterCaptainRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:captains',
-            'password' => 'required|string|min:8',
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:captains',
+            'phone' => 'required|string|unique:captains',
+            'password' => 'required|string',
         ];
     }
 } 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ReservationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,15 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('captains', function (Blueprint $table) {
+        Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('captain_id')->constrained()->onDelete('cascade');
+            $table->foreignId('availability_id')->constrained('captain_availabilities')->onDelete('cascade');
+            $table->string('status')->default(ReservationStatus::PENDING->value);
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->string('password');
-            $table->boolean('is_approved')->default(false);
-            $table->boolean('is_subscribed')->default(false);
-            $table->boolean('completed_info')->default(false);
+            $table->string('phone');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('captains');
+        Schema::dropIfExists('reservations');
     }
 };
