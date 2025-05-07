@@ -72,4 +72,9 @@ class Client extends Authenticatable
     {
         return $this->morphMany(Subscription::class, 'subscriber');
     }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

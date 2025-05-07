@@ -11,6 +11,7 @@ class Reservation extends Model
 
     protected $fillable = [
         'captain_id',
+        'client_id',
         'availability_id',
         'status',
         'name',
@@ -26,5 +27,14 @@ class Reservation extends Model
     public function availability()
     {
         return $this->belongsTo(CaptainAvailability::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

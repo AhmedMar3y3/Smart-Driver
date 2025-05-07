@@ -47,6 +47,11 @@ Route::middleware(['auth.client'])->group(function () {
     Route::get('/profile',          [ProfileController::class, 'getProfile']);
     Route::post('/update-profile',  [ProfileController::class, 'updateProfile']);
     Route::post('/change-password', [ProfileController::class, 'changePassword']);
+    Route::get('my-cars',           [ProfileController::class, 'myCars']);
+    Route::get('my-plates',         [ProfileController::class, 'myPlates']);
+    Route::post('toggle-car/{id}',  [ProfileController::class, 'toggleCarAsSold']);
+    Route::post('toggle-plate/{id}',[ProfileController::class, 'togglePlateAsSold']);
+    Route::get('my-reservations',   [ProfileController::class, 'myReservations']);
 
     // protected car and plate routes
     Route::post('/cars',       [CarController::class, 'store']);

@@ -52,7 +52,7 @@ class ReservationController extends Controller
     {
         try {
             $captain = CaptainAvailability::findOrFail($request->availability_id);
-            Reservation::create($request->validated() + ['captain_id' => $captain->captain_id]);
+            Reservation::create($request->validated() + ['captain_id' => $captain->captain_id, 'client_id' => auth('client')->user()->id]);
             return $this->successResponse('تم الحجز بنجاح');
         } catch (\Exception $e) {
             return $this->failureResponse('حدث خطأ أثناء الحجز');
