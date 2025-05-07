@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         //    BrandTableSeeder::class,
             EmiratesTableSeeder::class,
             CategorySeeder::class,
+            PackageSeeder::class,
         ]);
     }
 }
