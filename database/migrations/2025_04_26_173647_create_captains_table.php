@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password');
             $table->boolean('is_approved')->default(false);
-            $table->boolean('is_subscribed')->default(false);
             $table->boolean('completed_info')->default(false);
+            $table->float('rating')->default(0);
+            $table->integer('views_count')->default(0);
             $table->timestamps();
         });
     }

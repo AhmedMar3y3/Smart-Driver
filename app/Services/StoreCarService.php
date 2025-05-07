@@ -15,10 +15,6 @@ class StoreCarService
     {
         $client = Auth('client')->user();
 
-        // if (!$client->isSubscriped && $client->cars()->count() >= 2) {
-        //     throw new Exception('لا يمكنك اضافة سيارة جديدة, يجب عليك الاشتراك في باقة مميزة');
-        // }
-
         $car = Car::create($validatedData + ['client_id' => $client->id]);
 
         $data = [];

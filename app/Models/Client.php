@@ -67,4 +67,9 @@ class Client extends Authenticatable
     {
         return Hash::check($password, $this->password);
     }
+
+    public function subscriptions()
+    {
+        return $this->morphMany(Subscription::class, 'subscriber');
+    }
 }

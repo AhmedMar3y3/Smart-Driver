@@ -17,6 +17,7 @@ class ProfileResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'role' => 'captain',
             'personal_image_url' => $this->info->getFirstMediaUrl('personal_image'),
         ];
     }

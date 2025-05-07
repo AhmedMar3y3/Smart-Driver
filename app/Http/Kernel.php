@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'auth.admin' => \App\Http\Middleware\Admin::class,
         'auth.captain' => \App\Http\Middleware\Captain::class,
         'subscription' => \App\Http\Middleware\CheckSubscription::class,
+        'set-locale' => \App\Http\Middleware\SetLocaleFromAcceptLanguage::class,
     ];
 }

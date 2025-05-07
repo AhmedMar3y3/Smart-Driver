@@ -4,18 +4,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Client\CarController;
 use App\Http\Controllers\API\Client\AuthController;
-use App\Http\Controllers\API\Client\HeroController;
+use App\Http\Controllers\API\Client\HomeController;
 use App\Http\Controllers\API\Client\PlateController;
-use App\Http\Controllers\API\Client\ProfileController;
-use App\Http\Controllers\API\Client\SubscriptionController;
-use App\Http\Controllers\API\Client\ReservationController;
 use App\Http\Controllers\API\Client\ReviewController;
+use App\Http\Controllers\API\Client\ProfileController;
+use App\Http\Controllers\API\Client\ReservationController;
+use App\Http\Controllers\API\Client\SubscriptionController;
 
-// Dropdown routes
-Route::get('emirates',  [Controller::class, 'emirates']);
-Route::get('brands',    [Controller::class, 'brands']);
-Route::get('hero',      [HeroController::class, 'getHero']);
-Route::get('categories',[Controller::class, 'categories']);
+// Home routes
+Route::get('emirates',      [Controller::class, 'emirates']);
+Route::get('brands',        [Controller::class, 'brands']);
+Route::get('categories',    [Controller::class, 'categories']);
+Route::get('hero',          [HomeController::class, 'getHero']);
+Route::middleware(['set-locale'])->group(function () {
+    Route::get('car-packages',  [HomeController::class, 'carPackages']);
+    Route::get('plate-packages', [HomeController::class, 'platePackages']);
+});
 
 // Auth routes
 Route::post('/register',            [AuthController::class, 'register']);
@@ -24,7 +28,7 @@ Route::post('/login',               [AuthController::class, 'login']);
 // car routes
 Route::get('/cars',      [CarController::class, 'index']);
 Route::get('/cars/{id}', [CarController::class, 'show']);
-Route::get('/related-cars/{brandId}',[CarController::class, 'relatedCars']);
+Route::get('/related-cars/{brandId}', [CarController::class, 'relatedCars']);
 
 // plate routes
 Route::get('/plates',      [PlateController::class, 'index']);
@@ -56,4 +60,7 @@ Route::middleware(['auth.client'])->group(function () {
 
     // Review Routes
     Route::post('/post-review', [ReviewController::class, 'postReview']);
+
+    // Subscribe routes
+    Route::post('subscribe', [SubscriptionController::class, 'subscribeClient']);
 });

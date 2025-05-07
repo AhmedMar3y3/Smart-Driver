@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone');
-            $table->boolean('isSubscribed')->default(false);
-            $table->tinyInteger('subscription_type')->default(Subscription::FREE);
             $table->string('image')->nullable();
             $table->string('password');
             $table->rememberToken();

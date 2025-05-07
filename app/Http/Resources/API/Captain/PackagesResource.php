@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\API\Client;
+namespace App\Http\Resources\API\Captain;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProfileResource extends JsonResource
+class PackagesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,11 @@ class ProfileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
-            'image' => $this->image,
-            'role' => 'client',
+            'type' => $this->type,
+            'title' => $this->title,
+            'description' => $this->description,
+            'duration' => $this->duration,
+            'price' => $this->price,
         ];
     }
 }

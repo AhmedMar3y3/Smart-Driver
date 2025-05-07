@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\API\Client;
 
-use App\Enums\Status;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Client\Plate\FilterPlateRequest;
-use App\Http\Requests\API\Client\Plate\StorePlateRequest;
-use App\Http\Resources\API\Client\PlateDetailsResource;
-use App\Http\Resources\API\Client\PlatesResource;
-use App\Traits\HttpResponses;
-use App\Models\Plate;
-use App\Services\filterPlateService;
 use Exception;
+use App\Enums\Status;
+use App\Models\Plate;
+use App\Traits\HttpResponses;
+use App\Http\Controllers\Controller;
+use App\Services\filterPlateService;
+use App\Services\SubscriptionService;
+use App\Http\Resources\API\Client\PlatesResource;
+use App\Http\Resources\API\Client\PlateDetailsResource;
+use App\Http\Requests\API\Client\Plate\StorePlateRequest;
+use App\Http\Requests\API\Client\Plate\FilterPlateRequest;
 
 class PlateController extends Controller
 {
     use HttpResponses;
+
+    protected $subscriptionService;
+
+    public function __construct(SubscriptionService $subscriptionService)
+    {
+        $this->subscriptionService = $subscriptionService;
+    }
 
     public function index(FilterPlateRequest $request)
     {
@@ -39,13 +47,13 @@ class PlateController extends Controller
     {
         $client = Auth('client')->user();
         try {
-            // if (!$client->isSubscribed && $client->plates()->count() >= 2) {
-            //     throw new Exception('لا يمكنك اضافة لوحة جديدة, يجب عليك الاشتراك في باقة مميزة');
-            // }
+            if (!$this->subscriptionService->canPostPlateAd($client)) {
+                return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
+            }
             Plate::create($request->validated() + ['client_id' => $client->id]);
             return $this->successResponse('تم اضافة اللوحة بنجاح');
         } catch (Exception $e) {
-            return $this->failureResponse($e->getMessage());
+            return $this->failureResponse('حدث خطأ أثناء إضافة اللوحة: ');
         }
     }
 }

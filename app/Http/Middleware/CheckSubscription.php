@@ -17,8 +17,8 @@ class CheckSubscription
     {
         $captain = auth('captain')->user();
 
-        if (!$captain || !$captain->is_subscribed) {
-            return response()->json(['message' => 'يجب أن تكون مشتركًا للوصول إلى هذه الصفحة'], Response::HTTP_FORBIDDEN);
+        if (!$captain || !$captain->isSubscribed()) {
+            return response()->json(['message' => 'يجب أن تكون مشتركًا ولديك اشتراك نشط للوصول إلى هذه الصفحة'], Response::HTTP_FORBIDDEN);
         }
 
         return $next($request);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\Client;
+namespace App\Http\Controllers\API\Captain;
 
 use Illuminate\Http\Request;
 use App\Traits\HttpResponses;
@@ -17,17 +17,16 @@ class SubscriptionController extends Controller
     {
         $this->subscriptionService = $subscriptionService;
     }
-
-    public function subscribeClient(Request $request)
+    public function subscribeCaptain(Request $request)
     {
-        $client = auth('client')->user();
+        $captain = auth('captain')->user();
         $successUrl = $request->input('success_url');
         $errorUrl = $request->input('error_url');
 
         try {
-            $subscription = $this->subscriptionService->subscribe($client, $request->input('package_id'), $successUrl, $errorUrl);
+            $subscription = $this->subscriptionService->subscribe($captain, $request->input('package_id'), $successUrl, $errorUrl);
             return $this->successWithDataResponse([
-                'invoice_url' => $subscription->invoice_url,
+                'payment_url' => $subscription->invoice_url,
                 'subscription_id' => $subscription->id,
             ]);
         } catch (\Exception $e) {

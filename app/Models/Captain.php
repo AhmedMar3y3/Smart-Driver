@@ -18,14 +18,13 @@ class Captain extends Authenticatable
         'phone',
         'password',
         'is_approved',
-        'is_subscribed',
         'completed_info',
         'rating',
+        'views_count',
     ];
 
     protected $casts = [
         'is_approved' => 'boolean',
-        'is_subscribed' => 'boolean',
         'completed_info' => 'boolean',
     ];
 
@@ -69,5 +68,14 @@ class Captain extends Authenticatable
     {
         $this->password = $newPassword;
         $this->save();
+    }
+    public function subscriptions()
+    {
+        return $this->morphMany(Subscription::class, 'subscriber');
+    }
+
+    public function isSubscribed()
+    {
+        return $this->subscriptions()->where('status','active')->exists();
     }
 }

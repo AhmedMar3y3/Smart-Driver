@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\API\Client;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Client\Reservation\ReserveCaptainRequest;
-use App\Http\Resources\API\Client\CaptainsResource;
-use App\Http\Resources\API\Client\ReviewsResource;
 use App\Models\Captain;
-use App\Models\CaptainAvailability;
 use App\Models\Reservation;
 use App\Traits\HttpResponses;
+use App\Enums\SubscriptionStatus;
+use App\Models\CaptainAvailability;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\API\Client\ReviewsResource;
+use App\Http\Resources\API\Client\CaptainsResource;
+use App\Http\Requests\API\Client\Reservation\ReserveCaptainRequest;
 
 class ReservationController extends Controller
 {
     use HttpResponses;
 
-    //TODO number of completed reservations and ratings with reviews and make resources for availabilities
-
     public function captains()
     {
-        $captains = Captain::where('is_subscribed', true)->get();
+        $captains = Captain::whereHas('subscriptions', function ($query) {
+            $query->where('status', SubscriptionStatus::ACTIVE->value);
+        })->get();
         return $this->successWithDataResponse(CaptainsResource::collection($captains));
     }
 
@@ -29,6 +30,7 @@ class ReservationController extends Controller
         if (!$captain) {
             return $this->failureResponse('لا يوجد كابتن بهذا المعرف');
         }
+        $captain->increment('views_count');
         return $this->successWithDataResponse($captain->load(['info']));
     }
 

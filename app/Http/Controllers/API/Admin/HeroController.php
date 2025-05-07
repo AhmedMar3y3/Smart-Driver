@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\API\Admin;
 
+use App\Models\Hero;
+use App\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Admin\Hero\StoreHeroRequest;
 use App\Http\Requests\API\Admin\Hero\UpdateHeroRequest;
-use App\Traits\HttpResponses;
-use Illuminate\Http\Request;
-use App\Models\Hero;
 
 class HeroController extends Controller
 {

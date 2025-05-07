@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Enums\Status;
 use App\Traits\HttpResponses;
 use App\Services\StoreCarService;
+use App\Services\SubscriptionService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\Client\Car\FilterCarsRequest;
 use App\Http\Resources\API\Client\CarsResource;
@@ -18,10 +19,12 @@ class CarController extends Controller
     use HttpResponses;
 
     protected StoreCarService $carService;
+    protected SubscriptionService $subscriptionService;
 
-    public function __construct(StoreCarService $carService)
+    public function __construct(StoreCarService $carService, SubscriptionService $subscriptionService)
     {
         $this->carService = $carService;
+        $this->subscriptionService = $subscriptionService;
     }
 
     public function index(FilterCarsRequest $request)
@@ -31,8 +34,8 @@ class CarController extends Controller
         $cars = $query->get();
         $count = $cars->count();
         return response()->json([
-            "key"=> "success",
-            "msg"=> "تم بنجاح",
+            "key" => "success",
+            "msg" => "تم بنجاح",
             'data' => CarsResource::collection($cars),
             'count' => $count
         ]);
@@ -49,6 +52,12 @@ class CarController extends Controller
 
     public function store(StoreCarRequest $request)
     {
+        $client = auth('client')->user();
+
+        if (!$this->subscriptionService->canPostCarAd($client)) {
+            return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
+        }
+
         $validatedData = $request->validated();
         $files = $request->file('images');
 
@@ -56,16 +65,17 @@ class CarController extends Controller
             $this->carService->createCarWithImages($validatedData, $files);
             return $this->successResponse('تم اضافة السيارة بنجاح');
         } catch (\Exception $e) {
-            return $this->failureResponse($e->getMessage());
+            return $this->failureResponse('حدث خطأ أثناء إضافة السيارة: ');
         }
     }
 
-    public function relatedCars($brandId){
+    public function relatedCars($brandId)
+    {
         $cars = Car::where('brand_id', $brandId)
             ->where('status', Status::PENDING->value)
             ->latest()
             ->take(6)
-            ->get();  
+            ->get();
 
         if ($cars->isEmpty()) {
             return $this->successResponse('لا توجد سيارات متاحة لهذا الماركة');

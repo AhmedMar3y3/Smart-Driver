@@ -3,20 +3,24 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Captain\HomeController;
 use App\Http\Controllers\API\Captain\AuthController;
+use App\Http\Controllers\API\Captain\ReviewController;
 use App\Http\Controllers\API\Captain\ProfileController;
+use App\Http\Controllers\API\Captain\PackageController;
 use App\Http\Controllers\API\Captain\CaptainInfoController;
 use App\Http\Controllers\API\Captain\ReservationController;
 use App\Http\Controllers\API\Captain\AvailabilityController;
-use App\Http\Controllers\API\Captain\ReviewController;
+use App\Http\Controllers\API\Captain\SubscriptionController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware(['auth.captain'])->group(function () {
+Route::middleware(['auth.captain','set-locale'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('complete-info', [CaptainInfoController::class, 'completeInfo']);
+    Route::get('packages', [PackageController::class, 'captainPackages']);
     
     
+    Route::post('subscribe', [SubscriptionController::class, 'subscribeCaptain']);
     
     Route::middleware(['subscription'])->group(function () {
 
@@ -48,5 +52,8 @@ Route::middleware(['auth.captain'])->group(function () {
 
         // Review Routes
         Route::get('reviews', [ReviewController::class, 'index']);
+
+        // Subscription Routes
+
     });
 });

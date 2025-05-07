@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('category');
             $table->bigInteger('distance');
             $table->year('year');
             $table->tinyInteger('type')->default(0);
@@ -26,6 +25,7 @@ return new class extends Migration
             $table->text('additional_info')->nullable();
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

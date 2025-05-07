@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\PlateType;
 
 return new class extends Migration
 {
@@ -15,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('emirate_id')->constrained()->onDelete('cascade');
             $table->integer('number');
+            $table->string('type')->default(PlateType::MODERN);
             $table->string('phone');
             $table->text('address')->nullable();
             $table->bigInteger('price')->nullable();

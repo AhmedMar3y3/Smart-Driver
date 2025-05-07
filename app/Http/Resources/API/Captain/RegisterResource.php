@@ -24,6 +24,7 @@ class RegisterResource extends JsonResource
             'is_approved' => false,
             'is_subscribed' => false,
             'completed_info' => false,
+            'role' => 'captain',
             'token' => $this->token,
         ];
     }

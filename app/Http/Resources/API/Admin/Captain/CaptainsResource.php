@@ -20,8 +20,8 @@ class CaptainsResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'is_approved' => $this->is_approved,
-            'is_subscribed' => $this->is_subscribed,
-
+            'is_subscribed' => $this->isSubscribed(),
+            'completed_info' => $this->completed_info,
         ];
     }
 }

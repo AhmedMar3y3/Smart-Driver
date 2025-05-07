@@ -5,7 +5,7 @@ namespace App\Http\Resources\API\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProfileResource extends JsonResource
+class CarPackageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,12 @@ class ProfileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
-            'image' => $this->image,
-            'role' => 'client',
+            'title' => $this->title,
+            'description' => $this->description,
+            'price' => $this->price,
+            'type' => $this->type,
+            'ad_duration' => $this->ad_duration,
+            'allowed_ads_per_month' => $this->allowed_ads_per_month,
         ];
     }
 }
