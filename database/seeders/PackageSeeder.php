@@ -2,16 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Package;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PackageSeeder extends Seeder
 {
-    public function run(): void
-    {
-        $carPackages = [
+    private $package_data = [
+        'car' => [
             [
-                'type' => 'car',
                 'price' => 50.00,
                 'ad_duration' => 30,
                 'allowed_ads_per_month' => 5,
@@ -23,7 +21,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => 'ہر ماہ 5 کار اشتہارات 30 دن کے لئے پوسٹ کریں۔',
             ],
             [
-                'type' => 'car',
                 'price' => 100.00,
                 'ad_duration' => 45,
                 'allowed_ads_per_month' => 10,
@@ -35,7 +32,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => 'ہر ماہ 10 کار اشتہارات 45 دن کے لئے پوسٹ کریں۔',
             ],
             [
-                'type' => 'car',
                 'price' => 200.00,
                 'ad_duration' => 60,
                 'allowed_ads_per_month' => 20,
@@ -47,7 +43,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => 'ہر ماہ 20 کار اشتہارات 60 دن کے لئے پوسٹ کریں۔',
             ],
             [
-                'type' => 'car',
                 'price' => 75.00,
                 'ad_duration' => 30,
                 'allowed_ads_per_month' => 8,
@@ -59,7 +54,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => 'ہر ماہ 8 کار اشتہارات 30 دن کے لئے پوسٹ کریں۔',
             ],
             [
-                'type' => 'car',
                 'price' => 150.00,
                 'ad_duration' => 45,
                 'allowed_ads_per_month' => 15,
@@ -70,11 +64,9 @@ class PackageSeeder extends Seeder
                 'description_ar' => 'انشر ما يصل إلى 15 إعلان سيارة شهريًا لمدة 45 يومًا لكل إعلان.',
                 'description_ur' => 'ہر ماہ 15 کار اشتہارات 45 دن کے لئے پوسٹ کریں۔',
             ],
-        ];
-
-        $platePackages = [
+        ],
+        'plate' => [
             [
-                'type' => 'plate',
                 'price' => 30.00,
                 'duration' => 30,
                 'allowed_ads' => 3,
@@ -86,7 +78,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '30 دن کے لئے 3 پلیٹ اشتہارات کی فہرست بنائیں۔',
             ],
             [
-                'type' => 'plate',
                 'price' => 60.00,
                 'duration' => 60,
                 'allowed_ads' => 6,
@@ -98,7 +89,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '60 دن کے لئے 6 پلیٹ اشتہارات کی فہرست بنائیں۔',
             ],
             [
-                'type' => 'plate',
                 'price' => 100.00,
                 'duration' => 90,
                 'allowed_ads' => 10,
@@ -110,7 +100,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '90 دن کے لئے 10 پلیٹ اشتہارات کی فہرست بنائیں۔',
             ],
             [
-                'type' => 'plate',
                 'price' => 45.00,
                 'duration' => 30,
                 'allowed_ads' => 4,
@@ -122,7 +111,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '30 دن کے لئے 4 پلیٹ اشتہارات کی فہرست بنائیں۔',
             ],
             [
-                'type' => 'plate',
                 'price' => 80.00,
                 'duration' => 60,
                 'allowed_ads' => 8,
@@ -133,11 +121,9 @@ class PackageSeeder extends Seeder
                 'description_ar' => 'قائمة تصل إلى 8 إعلانات لوحات لمدة 60 يومًا.',
                 'description_ur' => '60 دن کے لئے 8 پلیٹ اشتہارات کی فہرست بنائیں۔',
             ],
-        ];
-
-        $captainPackages = [
+        ],
+        'captain' => [
             [
-                'type' => 'captain',
                 'price' => 25.00,
                 'duration' => 30,
                 'title_en' => 'Basic Captain Package',
@@ -148,7 +134,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '30 دن کے لئے کپتانوں کے لئے رکنیت۔',
             ],
             [
-                'type' => 'captain',
                 'price' => 50.00,
                 'duration' => 60,
                 'title_en' => 'Standard Captain Package',
@@ -159,7 +144,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '60 دن کے لئے کپتانوں کے لئے رکنیت۔',
             ],
             [
-                'type' => 'captain',
                 'price' => 100.00,
                 'duration' => 90,
                 'title_en' => 'Premium Captain Package',
@@ -170,7 +154,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '90 دن کے لئے کپتانوں کے لئے رکنیت۔',
             ],
             [
-                'type' => 'captain',
                 'price' => 40.00,
                 'duration' => 30,
                 'title_en' => 'Economy Captain Package',
@@ -181,7 +164,6 @@ class PackageSeeder extends Seeder
                 'description_ur' => '30 دن کے لئے کپتانوں کے لئے رکنیت۔',
             ],
             [
-                'type' => 'captain',
                 'price' => 75.00,
                 'duration' => 60,
                 'title_en' => 'Advanced Captain Package',
@@ -191,36 +173,50 @@ class PackageSeeder extends Seeder
                 'description_ar' => 'اشتراك للكباتن لمدة 60 يومًا.',
                 'description_ur' => '60 دن کے لئے کپتانوں کے لئے رکنیت۔',
             ],
-        ];
+        ],
+    ];
 
-        $packages = array_merge($carPackages, $platePackages, $captainPackages);
+    public function run(): void
+    {
+        foreach ($this->package_data as $type => $packages) {
+            foreach ($packages as $packageData) {
+                // Insert into packages table
+                $packageId = DB::table('packages')->insertGetId([
+                    'type' => $type,
+                    'price' => $packageData['price'],
+                    'duration' => $packageData['duration'] ?? null,
+                    'ad_duration' => $packageData['ad_duration'] ?? null,
+                    'allowed_ads' => $packageData['allowed_ads'] ?? null,
+                    'allowed_ads_per_month' => $packageData['allowed_ads_per_month'] ?? null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
 
-        foreach ($packages as $packageData) {
-            $translations = [
-                'en' => [
-                    'title' => $packageData['title_en'],
-                    'description' => $packageData['description_en'],
-                ],
-                'ar' => [
-                    'title' => $packageData['title_ar'],
-                    'description' => $packageData['description_ar'],
-                ],
-                'ur' => [
-                    'title' => $packageData['title_ur'],
-                    'description' => $packageData['description_ur'],
-                ],
-            ];
+                // Insert translations
+                $translations = [
+                    'en' => [
+                        'title' => $packageData['title_en'],
+                        'description' => $packageData['description_en'],
+                    ],
+                    'ar' => [
+                        'title' => $packageData['title_ar'],
+                        'description' => $packageData['description_ar'],
+                    ],
+                    'ur' => [
+                        'title' => $packageData['title_ur'],
+                        'description' => $packageData['description_ur'],
+                    ],
+                ];
 
-            unset(
-                $packageData['title_en'],
-                $packageData['title_ar'],
-                $packageData['title_ur'],
-                $packageData['description_en'],
-                $packageData['description_ar'],
-                $packageData['description_ur']
-            );
-
-            Package::create($packageData + ['translations' => $translations]);
+                foreach ($translations as $locale => $translation) {
+                    DB::table('package_translations')->insert([
+                        'package_id' => $packageId,
+                        'locale' => $locale,
+                        'title' => $translation['title'],
+                        'description' => $translation['description'],
+                    ]);
+                }
+            }
         }
     }
 }
