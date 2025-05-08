@@ -21,10 +21,10 @@ class PlateDetailsResource extends JsonResource
             'emirate_id' => $this->emirate_id,
             'emirate' => $this->emirate->name,
             'created_at' => $this->created_at->format('Y-m-d'),
-            'phone' => $this->phone,
-            'address' => $this->address,
+            'client_phone' => $this->client->phone,
             'client_name' => $this->client->name,
             'client_email' => $this->client->email,
+            'client_image' => $this->client->image ? url($this->client->image) : null,
             'type' => $this->type,
         ];
     }

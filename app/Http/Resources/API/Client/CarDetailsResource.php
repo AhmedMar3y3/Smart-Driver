@@ -29,10 +29,11 @@ class CarDetailsResource extends JsonResource
             'images' => $this->images->pluck('image')->map(function ($image) {
                 return url($image);
             }),
-            'phone' => $this->phone,
-            'address' => $this->address,
             'client_name' => $this->client->name,
+            'client_phone' => $this->client->phone,
             'client_email' => $this->client->email,
+            'client_image' => $this->client->image ? url($this->client->image) : null,
+
         ];
     }
 }
