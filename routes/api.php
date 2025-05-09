@@ -10,6 +10,8 @@ use App\Http\Controllers\API\Client\ReviewController;
 use App\Http\Controllers\API\Client\ProfileController;
 use App\Http\Controllers\API\Client\ReservationController;
 use App\Http\Controllers\API\Client\SubscriptionController;
+use App\Http\Controllers\API\Client\ExamController;
+use App\Http\Controllers\API\Client\QuestionSubscriptionController;
 
 // Home routes
 Route::get('emirates',      [Controller::class, 'emirates']);
@@ -68,4 +70,9 @@ Route::middleware(['auth.client'])->group(function () {
 
     // Subscribe routes
     Route::post('subscribe', [SubscriptionController::class, 'subscribeClient']);
+
+    // Exam Routes
+    Route::post('subscribe-question-package', [QuestionSubscriptionController::class, 'subscribe']);
+    Route::post('start-exam', [ExamController::class, 'startExam']);
+    Route::post('submit-exam', [ExamController::class, 'submitExam']);
 });

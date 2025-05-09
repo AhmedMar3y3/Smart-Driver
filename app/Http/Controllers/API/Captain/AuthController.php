@@ -41,4 +41,14 @@ class AuthController extends Controller
             return $this->failureResponse('فشل تسجيل الخروج: ' . $e->getMessage());
         }
     }
-} 
+
+    public function refresh()
+    {
+        try {
+            $captain = Auth('captain')->user();
+            $token = $captain->createToken('captain-token')->plainTextToken;
+            return $this->successWithDataResponse(AuthResource::make($captain)->setToken($token));
+        } catch (\Exception $e) {
+            return $this->failureResponse('فشل تحديث التوكن: ' . $e->getMessage());
+        }
+    }
