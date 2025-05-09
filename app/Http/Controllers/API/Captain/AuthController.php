@@ -52,3 +52,4 @@ class AuthController extends Controller
             return $this->failureResponse('فشل تحديث التوكن: ' . $e->getMessage());
         }
     }
+}
