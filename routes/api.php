@@ -44,6 +44,7 @@ Route::get('/captain-reviews/{id}', [ReservationController::class, 'captainRevie
 
 Route::middleware(['auth.client'])->group(function () {
     Route::post('/logout',              [AuthController::class, 'logout']);
+    Route::post('/refresh',             [AuthController::class, 'refresh']);
 
     //profile routes
     Route::get('/profile',          [ProfileController::class, 'getProfile']);
