@@ -16,6 +16,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware(['auth.captain','set-locale'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('/refresh',             [AuthController::class, 'refresh']);
     Route::post('complete-info', [CaptainInfoController::class, 'completeInfo']);
     Route::get('packages', [PackageController::class, 'captainPackages']);
     
