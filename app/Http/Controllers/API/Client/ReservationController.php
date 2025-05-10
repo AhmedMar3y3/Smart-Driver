@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Client;
 
+use App\Http\Resources\API\Client\DetailedCaptainResource;
 use App\Models\Captain;
 use App\Models\Reservation;
 use App\Traits\HttpResponses;
@@ -10,6 +11,7 @@ use App\Models\CaptainAvailability;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\Client\ReviewsResource;
 use App\Http\Resources\API\Client\CaptainsResource;
+use App\Http\Resources\API\Client\AvailabilitiesResource;
 use App\Http\Requests\API\Client\Reservation\ReserveCaptainRequest;
 
 class ReservationController extends Controller
@@ -31,14 +33,14 @@ class ReservationController extends Controller
             return $this->failureResponse('لا يوجد كابتن بهذا المعرف');
         }
         $captain->increment('views_count');
-        return $this->successWithDataResponse($captain->load(['info']));
+        return $this->successWithDataResponse(new DetailedCaptainResource($captain));
     }
 
     public function captainAvailabilities($id)
     {
         $captain = Captain::findOrFail($id);
         $captainAvailabilities = $captain->availabilities()->where('is_reserved', false)->get();
-        return $this->successWithDataResponse($captainAvailabilities);
+        return $this->successWithDataResponse(AvailabilitiesResource::collection($captainAvailabilities));
     }
 
     public function captainReviews($id)
