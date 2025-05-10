@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Client\CarController;
 use App\Http\Controllers\API\Client\AuthController;
 use App\Http\Controllers\API\Client\HomeController;
+use App\Http\Controllers\API\Client\ExamController;
 use App\Http\Controllers\API\Client\PlateController;
 use App\Http\Controllers\API\Client\ReviewController;
 use App\Http\Controllers\API\Client\ProfileController;
 use App\Http\Controllers\API\Client\ReservationController;
 use App\Http\Controllers\API\Client\SubscriptionController;
-use App\Http\Controllers\API\Client\ExamController;
 use App\Http\Controllers\API\Client\QuestionSubscriptionController;
 
 // Home routes

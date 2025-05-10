@@ -12,29 +12,29 @@ use App\Http\Controllers\API\Captain\AvailabilityController;
 use App\Http\Controllers\API\Captain\SubscriptionController;
 
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login',    [AuthController::class, 'login']);
 
 Route::middleware(['auth.captain','set-locale'])->group(function () {
-    Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('/refresh',             [AuthController::class, 'refresh']);
-    Route::post('complete-info', [CaptainInfoController::class, 'completeInfo']);
-    Route::get('packages', [PackageController::class, 'captainPackages']);
+    Route::post('logout',       [AuthController::class, 'logout']);
+    Route::post('/refresh',     [AuthController::class, 'refresh']);
+    Route::post('complete-info',[CaptainInfoController::class, 'completeInfo']);
     
-    
+    // Subscription Routes
+    Route::get('packages',   [PackageController::class, 'captainPackages']);
     Route::post('subscribe', [SubscriptionController::class, 'subscribeCaptain']);
     
     Route::middleware(['subscription'])->group(function () {
 
         // Profile Routes
-        Route::get('profile', [ProfileController::class, 'getProfile']);
-        Route::post('change-password', [ProfileController::class, 'changePassword']);
+        Route::get('profile',         [ProfileController::class, 'getProfile']);
+        Route::post('change-password',[ProfileController::class, 'changePassword']);
 
         // Info Routes
-        Route::get('info', [CaptainInfoController::class, 'show']);
-        Route::post('update-info', [CaptainInfoController::class, 'update']);
+        Route::get('info',        [CaptainInfoController::class, 'show']);
+        Route::post('update-info',[CaptainInfoController::class, 'update']);
 
         // Home Routes
-        Route::get('stats', [HomeController::class, 'stats']);
+        Route::get('stats',       [HomeController::class, 'stats']);
         
         // Availability Routes
         Route::get('availability',        [AvailabilityController::class, 'index']);
@@ -53,8 +53,6 @@ Route::middleware(['auth.captain','set-locale'])->group(function () {
 
         // Review Routes
         Route::get('reviews', [ReviewController::class, 'index']);
-
-        // Subscription Routes
 
     });
 });
