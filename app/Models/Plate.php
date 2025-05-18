@@ -19,6 +19,7 @@ class Plate extends Model
         'type',
         'emirate_id',
         'client_id',
+        'plate_code_id',
     ];
 
     protected $casts = [
@@ -33,5 +34,10 @@ class Plate extends Model
     public function emirate()
     {
         return $this->belongsTo(Emirate::class);
+    }
+
+    public function plateCode()
+    {
+        return $this->belongsTo(PlateCode::class);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class PaymentService
 {
@@ -16,7 +15,7 @@ class PaymentService
         $this->baseUrl = config('MyFatoorah.url');
     }
 
-    public function initiatePayment($subscription, $successUrl, $errorUrl)
+    public function initiatePayment($subscription, $successUrl, $errorUrl, $callbackRoute, $errorRoute)
     {
         $user = $subscription->subscriber;
         $payload = [
@@ -25,11 +24,11 @@ class PaymentService
             'InvoiceValue' => $subscription->package->price,
             'CurrencyCode' => 'AED',
             'DisplayCurrencyIso' => 'AED',
-            'CallBackUrl' => route('subscription.payment.callback', [
+            'CallBackUrl' => route($callbackRoute, [
                 'subscription_id' => $subscription->id,
                 'success_url' => $successUrl,
             ]),
-            'ErrorUrl' => route('subscription.payment.error', [
+            'ErrorUrl' => route($errorRoute, [
                 'subscription_id' => $subscription->id,
                 'error_url' => $errorUrl,
             ]),
@@ -47,7 +46,6 @@ class PaymentService
             throw new \Exception('Payment initiation failed.');
         }
 
-        Log::info('Payment initiation response:', $response->json());
         return $response->json()['Data'];
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('plates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('emirate_id')->constrained()->onDelete('cascade');
+            $table->foreignId('plate_code_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('number');
             $table->string('type')->default(PlateType::MODERN);
             $table->string('phone');

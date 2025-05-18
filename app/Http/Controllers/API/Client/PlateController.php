@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Client;
 use Exception;
 use App\Enums\Status;
 use App\Models\Plate;
+use App\Models\PlateCode;
 use App\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
 use App\Services\filterPlateService;
@@ -47,13 +48,21 @@ class PlateController extends Controller
     {
         $client = Auth('client')->user();
         try {
-            if (!$this->subscriptionService->canPostPlateAd($client)) {
-                return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
-            }
+            // if (!$this->subscriptionService->canPostPlateAd($client)) {
+            //     return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
+            // }
             Plate::create($request->validated() + ['client_id' => $client->id]);
             return $this->successResponse('تم اضافة اللوحة بنجاح');
         } catch (Exception $e) {
             return $this->failureResponse('حدث خطأ أثناء إضافة اللوحة: ');
         }
+    }
+
+    public function getPlateCodes($emirate_id)
+    {
+        $codes = PlateCode::where('emirate_id', $emirate_id)->get();
+        return $this->successWithDataResponse($codes->map(function ($code) {
+            return ['id' => $code->id, 'code' => $code->code];
+        }));
     }
 }

@@ -26,6 +26,7 @@ class PlateDetailsResource extends JsonResource
             'client_email' => $this->client->email,
             'client_image' => $this->client->image ? url($this->client->image) : null,
             'type' => $this->type,
+            'code' => $this->plateCode->code ? $this->plateCode->code : null,
         ];
     }
 }

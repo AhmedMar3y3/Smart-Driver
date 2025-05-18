@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\API\Client;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Client\Client\LoginClientRequest;
-use App\Http\Requests\API\Client\Client\RegisterClientRequest;
-use App\Http\Resources\API\Client\AuthResource;
 use App\Models\Client;
 use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\API\Client\AuthResource;
+use App\Http\Requests\API\Client\Client\LoginClientRequest;
+use App\Http\Requests\API\Client\Client\VerifyClientRequest;
+use App\Http\Requests\API\Client\Client\RegisterClientRequest;
+
 
 class AuthController extends Controller
 {
@@ -17,8 +19,24 @@ class AuthController extends Controller
     public function register(RegisterClientRequest $request)
     {
         $client = Client::create($request->validated());
-        $token = $client->createToken('client-token')->plainTextToken;
-        return $this->successWithDataResponse(AuthResource::make($client)->setToken($token));
+        $client->sendVerificationCode();
+        return $this->successWithDataResponse(AuthResource::make($client));
+    }
+
+     public function verifyEmail(VerifyClientRequest $request)
+    {
+        $client = Client::where('email', $request->email)->first();
+
+        if (!$client) {
+            return $this->failureResponse('المستخدم غير موجود');
+        }
+
+        if ($client->code !== $request->code) {
+            return $this->failureResponse('كود غير صحيح');
+        }
+
+        $client->markAsVerified();
+        return $this->successWithDataResponse(AuthResource::make($client)->setToken($client->login()));
     }
 
     public function login(LoginClientRequest $request)
@@ -27,8 +45,7 @@ class AuthController extends Controller
         if (!$client || !Hash::check($request->password, $client->password)) {
             return $this->failureResponse('بيانات الدخول غير صحيحة');
         }
-        $token = $client->createToken('client-token')->plainTextToken;
-        return $this->successWithDataResponse(AuthResource::make($client)->setToken($token));
+        return $this->successWithDataResponse(AuthResource::make($client)->setToken($client->login()));
     }
 
 

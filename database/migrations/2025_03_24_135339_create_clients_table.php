@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phone');
             $table->string('image')->nullable();
             $table->string('password');
+            $table->boolean('is_verified')->default(false);
+            $table->string('code')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

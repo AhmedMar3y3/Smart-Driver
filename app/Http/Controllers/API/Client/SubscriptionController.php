@@ -21,11 +21,13 @@ class SubscriptionController extends Controller
     public function subscribeClient(Request $request)
     {
         $client = auth('client')->user();
-        $successUrl = $request->input('success_url');
-        $errorUrl = $request->input('error_url');
+        $packageId = $request->input('package_id');
+        if (!$packageId) {
+            return $this->failureResponse('معرف الحزمة مطلوب.');
+        }
 
         try {
-            $subscription = $this->subscriptionService->subscribe($client, $request->input('package_id'), $successUrl, $errorUrl);
+            $subscription = $this->subscriptionService->subscribe($client, $packageId);
             return $this->successWithDataResponse([
                 'invoice_url' => $subscription->invoice_url,
                 'subscription_id' => $subscription->id,

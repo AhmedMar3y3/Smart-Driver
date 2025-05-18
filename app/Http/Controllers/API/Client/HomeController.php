@@ -9,6 +9,8 @@ use App\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\Client\CarPackageResource;
 use App\Http\Resources\API\Client\PlatePackageResource;
+use App\Http\Resources\API\Client\QuestionPackageResource;
+use App\Models\QuestionPackage;
 
 class HomeController extends Controller
 {
@@ -29,5 +31,11 @@ class HomeController extends Controller
     {
         $packages = Package::where('type', PackageType::PLATE->value)->get();
         return $this->successWithDataResponse(PlatePackageResource::collection($packages));
+    }
+
+    public function questionPackages()
+    {
+        $packages = QuestionPackage::all();
+        return $this->successWithDataResponse(QuestionPackageResource::collection($packages));
     }
 }

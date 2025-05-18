@@ -42,6 +42,8 @@ class ReservationController extends Controller
             return $this->failureResponse('لم يتم العثور على الحجز');
         }
         $reservation->update(['status' => ReservationStatus::CONFIRMED->value]);
+        $reservation->availability->delete();
+
         return $this->successResponse('تم قبول الحجز بنجاح');
     }
 

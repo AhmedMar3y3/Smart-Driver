@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Plate;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,6 +19,7 @@ class DatabaseSeeder extends Seeder
             EmiratesTableSeeder::class,
             CategorySeeder::class,
             PackageSeeder::class,
+            PlateCodeSeeder::class,
         ]);
     }
 }

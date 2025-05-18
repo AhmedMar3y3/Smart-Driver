@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('question_packages', function (Blueprint $table) {
             $table->id();
-            $table->string('level');
             $table->integer('level_order')->unique();
             $table->decimal('price', 10, 2);
             $table->integer('time_limit');

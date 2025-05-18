@@ -21,6 +21,7 @@ class PlatesResource extends JsonResource
             'emirate_id' => $this->emirate_id,
             'emirate' => $this->emirate->name,
             'type' => $this->type,
+            'code' => $this->plateCode->code ?? null,
         ];
     }
 }

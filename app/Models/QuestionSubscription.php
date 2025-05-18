@@ -18,7 +18,7 @@ class QuestionSubscription extends Model
         'invoice_url',
     ];
 
-    public function client()
+    public function subscriber()
     {
         return $this->belongsTo(Client::class, 'client_id');
     }

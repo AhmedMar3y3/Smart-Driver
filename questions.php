@@ -30,134 +30,79 @@
 
 - start make the code for the feature make everything needed migrations, models, controllers, routes, services.
 - make the code clean and organized and use the same structure we used in the previous steps. and if the logic is complex use a service and call it in the controller to handle the logic.
-now here is the refrences here is the client model "<?php
+now here is the refrences here is the client model
+
+
+
+
+we have implemented the package manipulation from the admin side and subscription to packages in the client side in the previous step
+- now we need to implement the exam feature the client after subscribing to the package can start the exam and answer the questions and submit the exam and get the results so we need to implement starting the exam with getting the first question and another endpoint to get the next question after checking the answer of the current question and another endpoint to submit the exam and get the results
+- so the flow is going to be like this:
+- 1. Client pays for the package and starts the exam (immediately or later)
+- 2. Client start the exam and get the first question
+- 3. Client answers the question sends his answer in the endpoint that gets the next question and gets the next question after saving the answer
+- 4. Client submits the exam (and cannot submit till he answer all questions) and gets the results and if the score is less than 90% he cannot start the next level exam he can buy it but cannot start it till he pass all the previous levels if he got less than 90% he cannot take the exam again unless he buys the package again
+- 5. If the client passes the exam with a score of 90% or more he can buy the next level package (or start the exam if he did buy it previously) and take it's exam and the previous package cannot be bought again cause he finished it
+- each exam has a time limit and the user must finish the exam before the time is up
+- the client should be able to see the packages he bought and the exams he took and the results of last attempt of each exam
+
+now here is the refrences here is the models of the feature 
+"<?php
 
 namespace App\Models;
 
 use App\Traits\HasImage;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
-
-class Client extends Authenticatable
-{
-    use HasFactory, HasImage, HasApiTokens;
-
-    protected $fillable = [
-        'name',
-        'image',
-        'phone',
-        'email',
-        'password',
-        'isSubscribed',
-        'subscription_type',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'isSubscribed' => 'boolean',
-        'subscription_type' => 'integer',
-    ];
-
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
-
-    public static function createWithGoogle(array $googleData)
-    {
-        return static::create([
-            'name' => $googleData['name'],
-            'email' => $googleData['email'],
-            'image' => $googleData['avatar'],
-            'password' => Hash::make(uniqid()),
-            'phone' => 'google',
-        ]);
-    }
-
-    public function cars()
-    {
-        return $this->hasMany(Car::class);
-    }
-
-    public function plates()
-    {
-        return $this->hasMany(Plate::class);
-    }
-    public function changePassword(string $newPassword): void
-    {
-        $this->password = $newPassword;
-        $this->save();
-    }
-
-    public function verifyPassword(string $password): bool
-    {
-        return Hash::check($password, $this->password);
-    }
-
-    public function subscriptions()
-    {
-        return $this->morphMany(Subscription::class, 'subscriber');
-    }
-
-    public function reservations()
-    {
-        return $this->hasMany(Reservation::class);
-    }
-}
-"
-and the package model "<?php
-
-namespace App\Models;
-
 use Astrotomic\Translatable\Translatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Package extends Model
+class QuestionPackage extends Model
 {
-    use HasFactory, Translatable;
-    protected $with = ['translations'];
+    use Translatable, HasImage;
+
+    protected $table = 'question_packages';
     public $translatedAttributes = ['title', 'description'];
-    protected $fillable = [
-        'type',
-        'price',
-        'duration',
-        'ad_duration',
-        'allowed_ads',
-        'allowed_ads_per_month',
-    ];
-    protected $casts = [
-        'type' => 'string',
-    ];
+    protected $fillable = ['level_order', 'price', 'time_limit'];
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class, 'question_package_id');
+    }
 
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(QuestionSubscription::class, 'question_package_id');
     }
-}
-" and subscription model "<?php
+}""<?php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Subscription extends Model
+class QuestionPackageTranslation extends Model
+{
+    use HasFactory;
+
+
+    protected $fillable = ['title', 'description'];
+
+    public $timestamps = false;
+
+}
+" "<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class QuestionSubscription extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'subscriber_id',
-        'subscriber_type',
-        'package_id',
-        'start_date',
-        'end_date',
+        'client_id',
+        'question_package_id',
         'status',
         'payment_status',
         'invoice_id',
@@ -166,150 +111,160 @@ class Subscription extends Model
 
     public function subscriber()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     public function package()
     {
-        return $this->belongsTo(Package::class);
-    }
-}
-" ah and the package title of course in three languages as seen in the controller and request of the previous feature "<?php
-
-namespace App\Http\Controllers\API\Admin;
-
-use App\Models\Package;
-use App\Traits\HttpResponses;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\API\Admin\PackageResource;
-use App\Http\Requests\API\Admin\Package\StorePackageRequest;
-use App\Http\Requests\API\Admin\Package\UpdatePackageRequest;
-
-class PackageController extends Controller
-{
-    use HttpResponses;
-
-    public function index()
-    {
-        $packages = Package::all();
-        return $this->successWithDataResponse(PackageResource::collection($packages));
+        return $this->belongsTo(QuestionPackage::class, 'question_package_id');
     }
 
-    public function show(Package $package)
+    public function exams()
     {
-        return $this->successWithDataResponse(new PackageResource($package));
-    }
-
-    public function store(StorePackageRequest $request)
-    {
-        $package = Package::create($request->validated());
-        $this->updateTranslations($package, $request);
-        return $this->successResponse('تم إضافة الباقة بنجاح');
-    }
-
-    public function update(UpdatePackageRequest $request, Package $package)
-    {
-        $package->update($request->validated());
-        $this->updateTranslations($package, $request);
-        return $this->successResponse('تم تعديل الباقة بنجاح');
-    }
-
-    public function destroy(Package $package)
-    {
-        $package->delete();
-        return $this->successResponse('تم حذف الباقة بنجاح');
-    }
-
-    protected function updateTranslations(Package $package, $request)
-    {
-        $locales = ['en', 'ar', 'ur'];
-        $fields = ['title', 'description'];
-
-        foreach ($locales as $locale) {
-            foreach ($fields as $field) {
-                $inputKey = "{$field}_{$locale}";
-                if ($request->has($inputKey)) {
-                    $package->translateOrNew($locale)->$field = $request->input($inputKey);
-                }
-            }
-        }
-        $package->save();
+        return $this->hasMany(Exam::class, 'question_subscription_id');
     }
 }" "<?php
 
-namespace App\Http\Requests\API\Admin\Package;
+namespace App\Models;
 
-use App\Http\Requests\BaseRequest;
+use App\Traits\HasImage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class StorePackageRequest extends BaseRequest
+class Question extends Model
 {
-    public function rules(): array
+    use HasFactory, HasImage;
+
+    protected $fillable = ['question_package_id', 'question_text', 'image'];
+
+    public function package()
     {
-        return [
-            'type' => 'required|in:car,plate,captain',
-            'price' => 'required|numeric|min:0',
-            'duration' => 'required_if:type,plate,captain|integer|min:1|nullable',
-            'ad_duration' => 'required_if:type,car|integer|min:1|nullable',
-            'allowed_ads' => 'required_if:type,plate|integer|min:0|nullable',
-            'allowed_ads_per_month' => 'required_if:type,car|integer|min:0|nullable',
-            'title_en' => 'required|string',
-            'title_ar' => 'required|string',
-            'title_ur' => 'required|string',
-            'description_en' => 'nullable|string',
-            'description_ar' => 'nullable|string',
-            'description_ur' => 'nullable|string',
-        ];
+        return $this->belongsTo(QuestionPackage::class, 'question_package_id');
     }
-}
-" and here is the subscription controller and service of the previous feature "<?php
+
+    public function choices()
+    {
+        return $this->hasMany(Choice::class, 'question_id');
+    }
+
+    public function examAnswers()
+    {
+        return $this->hasMany(ExamAnswer::class, 'question_id');
+    }
+}" "<?php
+
+namespace App\Models;
+
+use App\Traits\HasImage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Choice extends Model
+{
+    use HasFactory, HasImage;
+
+    protected $fillable = ['question_id', 'choice_text', 'is_correct', 'image'];
+    protected $casts = [
+        'is_correct' => 'boolean',
+    ];
+
+    public function question()
+    {
+        return $this->belongsTo(Question::class, 'question_id');
+    }
+
+    public function examAnswers()
+    {
+        return $this->hasMany(ExamAnswer::class, 'choice_id');
+    }
+}" and exam and exam answer models "<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Exam extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['question_subscription_id', 'start_time', 'end_time', 'status', 'score'];
+
+    public function subscription()
+    {
+        return $this->belongsTo(QuestionSubscription::class, 'question_subscription_id');
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(ExamAnswer::class, 'exam_id');
+    }
+}" "<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ExamAnswer extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['exam_id', 'question_id', 'choice_id'];
+
+    public function exam()
+    {
+        return $this->belongsTo(Exam::class, 'exam_id');
+    }
+
+    public function question()
+    {
+        return $this->belongsTo(Question::class, 'question_id');
+    }
+
+    public function choice()
+    {
+        return $this->belongsTo(Choice::class, 'choice_id');
+    }
+}" and here is the subscription controller and service "<?php
 
 namespace App\Http\Controllers\API\Client;
 
 use Illuminate\Http\Request;
 use App\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
-use App\Services\SubscriptionService;
+use App\Services\QuestionSubscriptionService;
 
-
-class SubscriptionController extends Controller
+class QuestionSubscriptionController extends Controller
 {
     use HttpResponses;
     protected $subscriptionService;
 
-    public function __construct(SubscriptionService $subscriptionService)
+    public function __construct(QuestionSubscriptionService $subscriptionService)
     {
         $this->subscriptionService = $subscriptionService;
     }
 
-    public function subscribeClient(Request $request)
+    public function subscribe(Request $request)
     {
         $client = auth('client')->user();
-        $successUrl = $request->input('success_url');
-        $errorUrl = $request->input('error_url');
-
-        try {
-            $subscription = $this->subscriptionService->subscribe($client, $request->input('package_id'), $successUrl, $errorUrl);
-            return $this->successWithDataResponse([
-                'invoice_url' => $subscription->invoice_url,
-                'subscription_id' => $subscription->id,
-            ]);
-        } catch (\Exception $e) {
-            return $this->failureResponse($e->getMessage());
-        }
+        $packageId = $request->input('package_id');
+        $subscription = $this->subscriptionService->subscribe($client, $packageId);
+        return $this->successWithDataResponse([
+            'invoice_url' => $subscription->invoice_url,
+            'subscription_id' => $subscription->id,
+        ]);
     }
-} "   "<?php
+}
+" "<?php
 
 namespace App\Services;
 
-use App\Enums\PaymentStatus;
-use App\Enums\SubscriptionStatus;
-use App\Models\Package;
-use App\Models\Subscription;
-use Carbon\Carbon;
-use App\Enums\Status;
-use Illuminate\Support\Facades\Log;
+use App\Exceptions\CustomException;
+use App\Models\QuestionSubscription;
+use App\Models\QuestionPackage;
 
-class SubscriptionService
+class QuestionSubscriptionService
 {
     protected $paymentService;
 
@@ -318,174 +273,130 @@ class SubscriptionService
         $this->paymentService = $paymentService;
     }
 
-    public function subscribe($user, $packageId, $successUrl, $errorUrl)
+    public function subscribe($client, $packageId)
     {
-        $package = Package::findOrFail($packageId);
-
-        if ($user instanceof \App\Models\Client && !in_array($package->type, ['car', 'plate'])) {
-            throw new \Exception('يمكن للعملاء الاشتراك فقط في باقات السيارات أو اللوحات.');
-        }
-        if ($user instanceof \App\Models\Captain && $package->type !== 'captain') {
-            throw new \Exception('يمكن للكباتن الاشتراك فقط في باقات الكابتن.');
+        $package = QuestionPackage::find($packageId);
+        if (!$package) {
+            throw new CustomException('حزمة غير صالحة.');
         }
 
-        $existingSubscription = $user->subscriptions()
-            ->where('status', SubscriptionStatus::ACTIVE->value)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
-            ->whereHas('package', fn($q) => $q->where('type', $package->type))
-            ->first();
-
-        if ($existingSubscription) {
-            if ($user instanceof \App\Models\Captain) {
-                throw new \Exception('لديك بالفعل اشتراك كابتن نشط.');
-            } else {
-                throw new \Exception("لديك بالفعل اشتراك نشط من نوع {$package->type}.");
-            }
+        if($client->hasActiveSubscription($packageId)) {
+            throw new CustomException('لديك بالفعل اشتراك نشط من نفس النوع.');
         }
 
-        $startDate = Carbon::now();
-        $endDate = $startDate->copy()->addDays($package->duration ?? 30);
-        $subscription = Subscription::create([
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'subscriber_id' => $user->id,
-            'subscriber_type' => get_class($user),
-            'package_id' => $package->id,
-            'status' => SubscriptionStatus::PENDING->value,
+        $subscription = QuestionSubscription::create([
+            'client_id' => $client->id,
+            'question_package_id' => $package->id,
+            'status' => 'pending',
+            'payment_status' => 'unpaid',
         ]);
 
-        try {
-            $paymentData = $this->paymentService->initiatePayment($subscription, $successUrl, $errorUrl);
-            $subscription->update([
-                'invoice_id' => $paymentData['InvoiceId'],
-                'invoice_url' => $paymentData['InvoiceURL'],
-                'payment_status' => PaymentStatus::INITIATED->value,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('فشل بدء الدفع عبر MyFatoorah', ['error' => $e->getMessage()]);
-            $subscription->delete();
-            throw $e;
-        }
+        $paymentData = $this->paymentService->initiatePayment(
+            $subscription,
+            config('MyFatoorah.front_end_success_url'),
+            config('MyFatoorah.front_end_error_url'),
+            'question.payment.callback',
+            'question.payment.error'
+        );
+        $subscription->update([
+            'invoice_id' => $paymentData['InvoiceId'],
+            'invoice_url' => $paymentData['InvoiceURL'],
+            'payment_status' => 'initiated',
+        ]);
 
         return $subscription;
     }
+}" and the exam controller and service which you're going to implement now "<?php
 
-    public function canPostCarAd($client)
+namespace App\Http\Controllers\API\Client;
+
+use App\Http\Controllers\Controller;
+use App\Services\ExamService;
+use Illuminate\Http\Request;
+
+class ExamController extends Controller
+{
+    protected $examService;
+
+    public function __construct(ExamService $examService)
     {
-        $activeSubscription = $client->subscriptions()
-            ->whereHas('package', fn($q) => $q->where('type', 'car'))
-            ->where('status', SubscriptionStatus::ACTIVE->value)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
-            ->first();
-
-        if ($activeSubscription) {
-            $startOfMonth = Carbon::now()->startOfMonth();
-            $endOfMonth = Carbon::now()->endOfMonth();
-            $adsThisMonth = $client->cars()
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->count();
-
-            return $adsThisMonth < $activeSubscription->package->allowed_ads_per_month;
-        } else {
-            $activeCars = $client->cars()
-                ->where('status', '!=', Status::SOLD->value)
-                ->count();
-
-            return $activeCars < 1;
-        }
+        $this->examService = $examService;
     }
 
-    public function canPostPlateAd($client)
+    public function startExam(Request $request)
     {
-        $subscription = $client->subscriptions()
-            ->whereHas('package', fn($q) => $q->where('type', 'plate'))
-            ->where('status', SubscriptionStatus::ACTIVE->value)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
-            ->first();
-
-        if (!$subscription) {
-            return false;
-        }
-
-        $adsPosted = $client->plates()
-            ->whereBetween('created_at', [$subscription->start_date, $subscription->end_date])
-            ->count();
-
-        return $adsPosted < $subscription->package->allowed_ads;
+        $client = auth('client')->user();
+        $exam = $this->examService->startExam($client, $request->input('subscription_id'));
+        return response()->json(['message' => 'Exam started', 'data' => $exam], 200);
     }
-}
-" and the payment service "<?php
+
+    public function submitExam(Request $request)
+    {
+        $client = auth('client')->user();
+        $result = $this->examService->submitExam($client, $request->input('exam_id'), $request->input('answers'));
+        return response()->json(['message' => 'Exam submitted', 'data' => $result], 200);
+    }
+}" "<?php
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use App\Models\Exam;
+use App\Models\QuestionSubscription;
+use Carbon\Carbon;
 
-class PaymentService
+class ExamService
 {
-    protected $apiKey;
-    protected $baseUrl;
-
-    public function __construct()
+    public function startExam($client, $subscriptionId)
     {
-        $this->apiKey = config('MyFatoorah.token');
-        $this->baseUrl = config('MyFatoorah.url');
-    }
+        $subscription = QuestionSubscription::where('id', $subscriptionId)
+            ->where('client_id', $client->id)
+            ->where('status', 'active')
+            ->firstOrFail();
 
-    public function initiatePayment($subscription, $successUrl, $errorUrl)
-    {
-        $user = $subscription->subscriber;
-        $payload = [
-            'CustomerName' => $user->name,
-            'NotificationOption' => 'LNK',
-            'InvoiceValue' => $subscription->package->price,
-            'CurrencyCode' => 'AED',
-            'DisplayCurrencyIso' => 'AED',
-            'CallBackUrl' => route('subscription.payment.callback', [
-                'subscription_id' => $subscription->id,
-                'success_url' => $successUrl,
-            ]),
-            'ErrorUrl' => route('subscription.payment.error', [
-                'subscription_id' => $subscription->id,
-                'error_url' => $errorUrl,
-            ]),
-            'CustomerEmail' => $user->email,
-            'CustomerMobile' => $user->phone ?? '+00000',
-            'CustomerReference' => $subscription->id,
-        ];
-
-        $response = Http::withHeaders([
-            'Authorization' => "Bearer {$this->apiKey}",
-            'Content-Type' => 'application/json',
-        ])->post("{$this->baseUrl}/v2/SendPayment", $payload);
-
-        if (!$response->ok()) {
-            throw new \Exception('Payment initiation failed.');
-        }
-
-        Log::info('Payment initiation response:', $response->json());
-        return $response->json()['Data'];
-    }
-
-    public function getPaymentStatus($invoiceId)
-    {
-        $response = Http::withHeaders([
-            'Authorization' => "Bearer {$this->apiKey}",
-            'Content-Type' => 'application/json',
-        ])->post("{$this->baseUrl}/v2/GetPaymentStatus", [
-            'KeyType' => 'InvoiceId',
-            'Key' => (string) $invoiceId,
+        $exam = Exam::create([
+            'question_subscription_id' => $subscription->id,
+            'start_time' => Carbon::now(),
+            'end_time' => Carbon::now()->addMinutes($subscription->package->time_limit),
+            'status' => 'in_progress',
         ]);
 
-        if (!$response->ok()) {
-            throw new \Exception('Failed to retrieve payment status.');
+        return $exam;
+    }
+
+    public function submitExam($client, $examId, $answers)
+    {
+        $exam = Exam::where('id', $examId)
+            ->whereHas('subscription', fn($q) => $q->where('client_id', $client->id))
+            ->firstOrFail();
+
+        if ($exam->status !== 'in_progress') {
+            throw new \Exception('Exam is not in progress.');
         }
 
-        return $response->json();
+        foreach ($answers as $answer) {
+            $exam->answers()->create([
+                'question_id' => $answer['question_id'],
+                'choice_id' => $answer['choice_id'],
+            ]);
+        }
+
+        $correctAnswers = $exam->answers()->whereHas('choice', fn($q) => $q->where('is_correct', true))->count();
+        $totalQuestions = $exam->subscription->package->questions()->count();
+        $score = ($correctAnswers / $totalQuestions) * 100;
+
+        $exam->update([
+            'status' => 'completed',
+            'score' => $score,
+            'end_time' => Carbon::now(),
+        ]);
+
+        if ($score >= 90) {
+            $exam->subscription->update(['status' => 'completed']);
+        }
+
+        return ['score' => $score, 'passed' => $score >= 90];
     }
 }"
-
 */
+
+

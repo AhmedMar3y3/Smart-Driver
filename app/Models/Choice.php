@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\HasImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Choice extends Model
 {
-    use HasFactory;
+    use HasFactory, HasImage;
 
-    protected $fillable = ['question_id', 'choice_text', 'is_correct'];
+    protected $fillable = ['question_id', 'choice_text', 'is_correct', 'image'];
+    protected $casts = [
+        'is_correct' => 'boolean',
+    ];
 
     public function question()
     {

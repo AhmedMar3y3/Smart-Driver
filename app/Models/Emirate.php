@@ -17,4 +17,9 @@ class Emirate extends Model
     {
         return $this->hasMany(Plate::class);
     }
+
+    public function plateCodes()
+    {
+        return $this->hasMany(PlateCode::class);
+    }
 }

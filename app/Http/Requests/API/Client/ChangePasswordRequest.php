@@ -23,6 +23,7 @@ class ChangePasswordRequest extends BaseRequest
                 'required',
                 'string',
                 'min:8',
+                'confirmed',
             ],
         ];
     }

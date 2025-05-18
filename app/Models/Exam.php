@@ -11,6 +11,11 @@ class Exam extends Model
 
     protected $fillable = ['question_subscription_id', 'start_time', 'end_time', 'status', 'score'];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
     public function subscription()
     {
         return $this->belongsTo(QuestionSubscription::class, 'question_subscription_id');

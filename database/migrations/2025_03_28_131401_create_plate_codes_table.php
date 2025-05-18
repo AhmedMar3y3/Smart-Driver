@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reservations', function (Blueprint $table) {
-            $table->foreignId('client_id')->nullable()->constrained('clients')->cascadeOnDelete();
+        Schema::create('plate_codes', function (Blueprint $table) {
+            $table->id();
+            $table->string('code');
+            $table->foreignId('emirate_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reservations', function (Blueprint $table) {
-            $table->dropForeign(['client_id']);
-            $table->dropColumn('client_id');
-        });
+        Schema::dropIfExists('plate_codes');
     }
 };

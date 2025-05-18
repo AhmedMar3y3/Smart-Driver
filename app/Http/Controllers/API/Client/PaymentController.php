@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Subscription;
 use App\Services\PaymentService;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -20,12 +21,14 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
         $subscriptionId = $request->get('subscription_id');
-        $successUrl = $request->query('success_url', config('app.front_end_success_url'));
+        $successUrl = $request->query('success_url', config('MyFatoorah.front_end_success_url'));
+        $errorUrl = $request->query('error_url', config('MyFatoorah.front_end_error_url'));
 
         DB::beginTransaction();
         try {
             $subscription = Subscription::findOrFail($subscriptionId);
             $paymentStatus = $this->paymentService->getPaymentStatus($subscription->invoice_id);
+            Log::info('Payment Status:', ['status' => $paymentStatus]);
 
             if ($paymentStatus['Data']['InvoiceStatus'] === 'Paid') {
                 $subscription->update([
@@ -36,14 +39,14 @@ class PaymentController extends Controller
                 ]);
             } else {
                 $subscription->update(['payment_status' => 'failed']);
-                return redirect($successUrl . '?status=failed&message=Payment not successful');
+                return redirect($errorUrl . '?status=failed&message=Payment not successful');
             }
 
             DB::commit();
             return redirect($successUrl . '?status=success&subscription_id=' . $subscription->id);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect($successUrl . '?status=failed&message=' . urlencode($e->getMessage()));
+            return redirect($errorUrl . '?status=failed&message=' . urlencode($e->getMessage()));
         }
     }
 

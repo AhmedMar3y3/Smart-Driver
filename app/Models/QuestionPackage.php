@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasImage;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 
 class QuestionPackage extends Model
 {
-    use Translatable;
+    use Translatable, HasImage;
 
     protected $table = 'question_packages';
     public $translatedAttributes = ['title', 'description'];
-    protected $fillable = ['level', 'price', 'time_limit'];
+    protected $fillable = ['level_order', 'price', 'time_limit'];
 
     public function questions()
     {

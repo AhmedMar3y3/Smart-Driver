@@ -3,6 +3,7 @@
 namespace App\Http\Requests\API\Client\Plate;
 
 use App\Http\Requests\BaseRequest;
+use Illuminate\Validation\Rule;
 
 class StorePlateRequest extends BaseRequest
 {
@@ -20,6 +21,18 @@ class StorePlateRequest extends BaseRequest
             'phone'      => 'required|string',
             'address'    => 'nullable|string',
             'emirate_id' => 'required|exists:emirates,id',
+            'plate_code_id' => [
+                'nullable',
+                Rule::requiredIf(function () {
+                    return $this->type === 'modern' || $this->type === null;
+                }),
+                Rule::prohibitedIf(function () {
+                    return $this->type === 'classic';
+                }),
+                Rule::exists('plate_codes', 'id')->where(function ($query) {
+                    return $query->where('emirate_id', $this->emirate_id);
+                }),
+            ],
         ];
 
         if (in_array($this->emirate_id, [1, 2, 3])) {

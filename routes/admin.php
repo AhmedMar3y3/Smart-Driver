@@ -45,6 +45,9 @@ Route::middleware(['auth.admin', 'set-locale'])->group(function () {
     Route::delete('packages/{package}',[PackageController::class, 'destroy']);
 
     // question packages
-    Route::post('question-packages',   [QuestionPackageController::class, 'store']);
+    Route::get('question-packages',        [QuestionPackageController::class, 'index']);
+    Route::get('question-packages/{id}',   [QuestionPackageController::class, 'show']);
+    Route::post('question-packages',       [QuestionPackageController::class, 'store']);
+    Route::delete('question-packages/{id}',[QuestionPackageController::class, 'destroy']);
 
 });

@@ -7,11 +7,21 @@ use Illuminate\Support\Facades\DB;
 
 class QuestionPackageService
 {
+
+    public function getAllPackages()
+    {
+        return QuestionPackage::all();
+    }
+
+    public function getPackageById($id)
+    {
+        return QuestionPackage::findOrFail($id);
+    }
     public function createPackage(array $data)
     {
         return DB::transaction(function () use ($data) {
             $package = QuestionPackage::create([
-                'level' => $data['level'],
+                'level_order' => $data['level_order'],
                 'price' => $data['price'],
                 'time_limit' => $data['time_limit'],
             ]);
@@ -31,6 +41,7 @@ class QuestionPackageService
                 foreach ($questionData['choices'] as $choiceData) {
                     $question->choices()->create([
                         'choice_text' => $choiceData['choice_text'],
+                        'image' => $choiceData['image'] ?? null,
                         'is_correct' => $choiceData['is_correct'],
                     ]);
                 }
@@ -38,5 +49,11 @@ class QuestionPackageService
 
             return $package;
         });
+    }
+
+    public function deletePackage($id)
+    {
+        $package = QuestionPackage::findOrFail($id);
+        $package->delete();
     }
 }

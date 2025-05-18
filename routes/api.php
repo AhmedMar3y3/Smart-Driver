@@ -21,10 +21,13 @@ Route::get('hero',          [HomeController::class, 'getHero']);
 Route::middleware(['set-locale'])->group(function () {
     Route::get('car-packages',  [HomeController::class, 'carPackages']);
     Route::get('plate-packages', [HomeController::class, 'platePackages']);
+    Route::get('question-packages', [HomeController::class, 'questionPackages']);
+
 });
 
 // Auth routes
 Route::post('/register',            [AuthController::class, 'register']);
+Route::post('/verify-email',        [AuthController::class, 'verifyEmail']);
 Route::post('/login',               [AuthController::class, 'login']);
 
 // car routes
@@ -54,10 +57,13 @@ Route::middleware(['auth.client'])->group(function () {
     Route::post('toggle-car/{id}',  [ProfileController::class, 'toggleCarAsSold']);
     Route::post('toggle-plate/{id}',[ProfileController::class, 'togglePlateAsSold']);
     Route::get('my-reservations',   [ProfileController::class, 'myReservations']);
+    Route::get('my-exams',          [ProfileController::class, 'myQuestionPackages']);
+    Route::get('my-attempts',       [ProfileController::class, 'myAttempets']);
 
     // protected car and plate routes
     Route::post('/cars',       [CarController::class, 'store']);
     Route::post('/plates',     [PlateController::class, 'store']);
+    Route::get('/plate-codes/{emirate_id}', [PlateController::class, 'getPlateCodes']);
 
     // Subscription Routes
     Route::post('/subscribe',  [SubscriptionController::class, 'subscribe']);
@@ -74,5 +80,7 @@ Route::middleware(['auth.client'])->group(function () {
     // Exam Routes
     Route::post('subscribe-question-package', [QuestionSubscriptionController::class, 'subscribe']);
     Route::post('start-exam', [ExamController::class, 'startExam']);
+    Route::get('exam/{examId}/question/{questionOrder}', [ExamController::class, 'getQuestion']);
+    Route::post('submit-answer', [ExamController::class, 'submitAnswer']);
     Route::post('submit-exam', [ExamController::class, 'submitExam']);
 });

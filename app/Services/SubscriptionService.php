@@ -19,9 +19,12 @@ class SubscriptionService
         $this->paymentService = $paymentService;
     }
 
-    public function subscribe($user, $packageId, $successUrl, $errorUrl)
+    public function subscribe($user, $packageId)
     {
-        $package = Package::findOrFail($packageId);
+        $package = Package::find($packageId);
+        if (!$package) {
+            throw new \Exception('حزمة غير صالحة.');
+        }
 
         if ($user instanceof \App\Models\Client && !in_array($package->type, ['car', 'plate'])) {
             throw new \Exception('يمكن للعملاء الاشتراك فقط في باقات السيارات أو اللوحات.');
@@ -57,7 +60,13 @@ class SubscriptionService
         ]);
 
         try {
-            $paymentData = $this->paymentService->initiatePayment($subscription, $successUrl, $errorUrl);
+            $paymentData = $this->paymentService->initiatePayment(
+                $subscription,
+                config('MyFatoorah.front_end_success_url'),
+                config('MyFatoorah.front_end_error_url'),
+                'subscription.payment.callback',
+                'subscription.payment.error'
+            );
             $subscription->update([
                 'invoice_id' => $paymentData['InvoiceId'],
                 'invoice_url' => $paymentData['InvoiceURL'],

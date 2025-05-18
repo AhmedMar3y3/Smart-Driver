@@ -10,6 +10,8 @@ use App\Http\Resources\API\Client\PlatesResource;
 use App\Http\Resources\API\Client\ProfileResource;
 use App\Http\Requests\API\Client\UpdateProfileRequest;
 use App\Http\Requests\API\Client\ChangePasswordRequest;
+use App\Http\Resources\API\Client\MyAttemptsResource;
+use App\Http\Resources\API\Client\MyExamsResource;
 use App\Http\Resources\API\Client\ReservationResource;
 
 class ProfileController extends Controller
@@ -69,5 +71,16 @@ class ProfileController extends Controller
     {
         $user = auth('client')->user();
         return $this->successWithDataResponse(ReservationResource::collection($user->reservations));
+    }
+
+    public function myQuestionPackages()
+    {
+        $user = auth('client')->user();
+        return $this->successWithDataResponse(MyExamsResource::collection($user->questionSubscriptions->where('status', 'active')));
+    }
+    public function myAttempets()
+    {
+        $user = auth('client')->user();
+        return $this->successWithDataResponse(MyAttemptsResource::collection($user->questionSubscriptions->flatMap->exams));
     }
 }
