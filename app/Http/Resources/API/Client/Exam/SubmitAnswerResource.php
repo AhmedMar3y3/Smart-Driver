@@ -16,7 +16,7 @@ class SubmitAnswerResource extends JsonResource
     {
         $isLastQuestion = !isset($this['question']);
         return [
-            'exam_id' => $request->input('exam_id'),
+            'id' => (int)$request->input('exam_id'),
             'total_questions' => $this['total_questions'] ?? null,
             'remaining_time' => $this['remaining_time'] ?? null,
             'question' => $isLastQuestion ? null : new QuestionResource($this['question']),

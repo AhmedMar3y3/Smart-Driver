@@ -32,4 +32,9 @@ class QuestionSubscription extends Model
     {
         return $this->hasMany(Exam::class, 'question_subscription_id');
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 }

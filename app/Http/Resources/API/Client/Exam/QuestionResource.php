@@ -16,6 +16,7 @@ class QuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'text' => $this->question_text,
             'image' => $this->image,
             'choices' => ChoiceResource::collection($this->choices),

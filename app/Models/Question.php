@@ -10,7 +10,10 @@ class Question extends Model
 {
     use HasFactory, HasImage;
 
-    protected $fillable = ['question_package_id', 'question_text', 'image'];
+    protected $fillable = ['question_package_id', 'question_text', 'image', 'type'];
+    protected $casts = [
+        'type' => 'string',
+    ];
 
     public function package()
     {

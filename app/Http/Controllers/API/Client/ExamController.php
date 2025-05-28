@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\Client\Exam\ExamStartResource;
 use App\Http\Resources\API\Client\Exam\SubmitAnswerResource;
+use App\Http\Resources\API\Client\Exam\TimerResource;
+use App\Models\Exam;
 use App\Services\ExamService;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -49,5 +51,16 @@ class ExamController extends Controller
         $examId = $request->input('exam_id');
         $result = $this->examService->submitExam($client, $examId);
         return $this->successWithDataResponse($result);
+    }
+
+    public function timer($examId)
+    {
+        $client = auth('client')->user();
+        $timerData = Exam::where('id', $examId)
+            ->whereHas('subscription', function ($query) use ($client) {
+                $query->where('client_id', $client->id);
+            })
+            ->first();
+        return $this->successWithDataResponse(new TimerResource($timerData));
     }
 }

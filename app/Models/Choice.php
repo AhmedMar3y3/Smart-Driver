@@ -10,9 +10,10 @@ class Choice extends Model
 {
     use HasFactory, HasImage;
 
-    protected $fillable = ['question_id', 'choice_text', 'is_correct', 'image'];
+    protected $fillable = ['question_id', 'choice_text', 'is_correct', 'image','type'];
     protected $casts = [
         'is_correct' => 'boolean',
+        'type' => 'string',
     ];
 
     public function question()

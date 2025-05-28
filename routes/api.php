@@ -83,4 +83,5 @@ Route::middleware(['auth.client'])->group(function () {
     Route::get('exam/{examId}/question/{questionOrder}', [ExamController::class, 'getQuestion']);
     Route::post('submit-answer', [ExamController::class, 'submitAnswer']);
     Route::post('submit-exam', [ExamController::class, 'submitExam']);
+    Route::get('exam/{examId}/timer', [ExamController::class, 'timer']);
 });

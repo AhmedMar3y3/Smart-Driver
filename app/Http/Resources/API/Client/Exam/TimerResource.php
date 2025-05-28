@@ -5,7 +5,7 @@ namespace App\Http\Resources\API\Client\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChoiceResource extends JsonResource
+class TimerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,10 @@ class ChoiceResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'type' => $this->type,
-            'text' => $this->choice_text,
-            'image' => $this->image,
+            'exam_id' => $this->id,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+            'package_limit' => $this->subscription->package->time_limit,
         ];
     }
 }

@@ -34,13 +34,15 @@ class QuestionPackageService
 
             foreach ($data['questions'] as $questionData) {
                 $question = $package->questions()->create([
-                    'question_text' => $questionData['question_text'],
+                    'type' => $questionData['type'],
+                    'question_text' => $questionData['question_text'] ?? null,
                     'image' => $questionData['image'] ?? null,
                 ]);
 
                 foreach ($questionData['choices'] as $choiceData) {
                     $question->choices()->create([
-                        'choice_text' => $choiceData['choice_text'],
+                        'type' => $choiceData['type'],
+                        'choice_text' => $choiceData['choice_text'] ?? null,
                         'image' => $choiceData['image'] ?? null,
                         'is_correct' => $choiceData['is_correct'],
                     ]);
