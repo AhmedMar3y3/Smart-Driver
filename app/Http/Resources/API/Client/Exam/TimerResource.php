@@ -19,6 +19,7 @@ class TimerResource extends JsonResource
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'package_limit' => $this->subscription->package->time_limit,
+            'total_questions' => $this->subscription->package->questions->count(),
         ];
     }
 }
