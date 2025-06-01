@@ -21,7 +21,7 @@ class ExamStartResource extends JsonResource
             // 'start_time' => $this->start_time,
             // 'end_time' => $this->end_time,
             // 'status' => $this->status,
-            'first_question' => new QuestionResource($this->subscription->package->questions->first()),
+            'question' => new QuestionResource($this->subscription->package->questions->first()),
         ];
     }
 }
