@@ -15,6 +15,7 @@ class SectionSeeder extends Seeder
     {
         $sections = [
             ['name' => 'captain'],
+            ['name' => 'question'],
             ['name' => 'car'],
             ['name' => 'plate'],
         ];
