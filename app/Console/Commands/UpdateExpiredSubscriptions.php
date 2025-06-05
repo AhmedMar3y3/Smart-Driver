@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Plate;
 use Illuminate\Console\Command;
 use App\Models\Subscription;
 use Carbon\Carbon;
@@ -14,10 +15,15 @@ class UpdateExpiredSubscriptions extends Command
     public function handle()
     {
         $today = Carbon::now()->toDateString();
-        Subscription::where('end_date', '<', $today)
+        $expiredSubscriptions = Subscription::where('end_date', '<', $today)
             ->where('status', 'active')
-            ->update(['status' => 'expired']);
+            ->get();
 
-        $this->info('Expired subscriptions have been updated.');
+        foreach ($expiredSubscriptions as $subscription) {
+            $subscription->update(['status' => 'expired']);
+            Plate::where('client_id', $subscription->subscriber_id)->delete();
+        }
+
+        $this->info('Expired subscriptions have been updated and related plates have been deleted.');
     }
 }
