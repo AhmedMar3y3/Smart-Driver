@@ -26,11 +26,13 @@ class Car extends Model
         'brand_id',
         'client_id',
         'category_id',
-        'subscription_id',
+        'expires_at',
+        'expiry_status',
     ];
     protected $casts = [
         'type' => CarType::class,
         'status' => 'integer',
+        'expiry_status' => 'string',
     ];
 
     public function brand()
@@ -53,8 +55,13 @@ class Car extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function subscription()
+    public function scopeActive($query)
     {
-        return $this->belongsTo(Subscription::class);
+        return $query->where('expiry_status', 'active');
+    }
+
+    public function scopeExpired($query)
+    {
+        return $query->where('expiry_status', 'expired');
     }
 }

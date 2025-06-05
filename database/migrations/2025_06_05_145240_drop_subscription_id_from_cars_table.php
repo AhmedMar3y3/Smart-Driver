@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('plates', function (Blueprint $table) {
+        Schema::table('cars', function (Blueprint $table) {
             $table->dropForeign(['subscription_id']);
             $table->dropColumn('subscription_id');
         });
@@ -22,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('plates', function (Blueprint $table) {
-            $table->unsignedBigInteger('subscription_id')->nullable();
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+        Schema::table('cars', function (Blueprint $table) {
+            //
         });
     }
 };

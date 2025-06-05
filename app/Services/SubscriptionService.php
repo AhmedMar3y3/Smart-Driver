@@ -97,13 +97,21 @@ class SubscriptionService
                 ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
                 ->count();
 
-            return $adsThisMonth < $activeSubscription->package->allowed_ads_per_month;
+            if ($adsThisMonth <= $activeSubscription->package->allowed_ads_per_month) {
+                return ['can_post' => true, 'expires_in_days' => $activeSubscription->package->ad_duration];
+            } else {
+                return ['can_post' => false];
+            }
         } else {
             $activeCars = $client->cars()
                 ->where('status', '!=', Status::SOLD->value)
                 ->count();
 
-            return $activeCars < 1;
+            if ($activeCars < 1) {
+                return ['can_post' => true, 'expires_in_days' => 15];
+            } else {
+                return ['can_post' => false];
+            }
         }
     }
 

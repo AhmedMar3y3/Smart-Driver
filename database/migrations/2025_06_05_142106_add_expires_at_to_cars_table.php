@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cars', function (Blueprint $table) {
-            $table->foreignId('subscription_id')->nullable()->constrained()->onDelete('cascade');
+            $table->date('expires_at')->nullable();
+            $table->enum('expiry_status', ['active', 'expired'])->default('active');
         });
     }
 
@@ -22,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('cars', function (Blueprint $table) {
-            $table->dropForeign(['subscription_id']);
-            $table->dropColumn('subscription_id');
+            $table->dropColumn('expires_at');
+            $table->dropColumn('expiry_status');
         });
     }
 };

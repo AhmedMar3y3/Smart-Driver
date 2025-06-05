@@ -6,13 +6,13 @@ use App\Models\Car;
 use App\Enums\Status;
 use App\Traits\HttpResponses;
 use App\Services\StoreCarService;
-use App\Services\SubscriptionService;
+use App\Services\filterCarService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Client\Car\FilterCarsRequest;
+use App\Services\SubscriptionService;
 use App\Http\Resources\API\Client\CarsResource;
 use App\Http\Requests\API\Client\Car\StoreCarRequest;
 use App\Http\Resources\API\Client\CarDetailsResource;
-use App\Services\filterCarService;
+use App\Http\Requests\API\Client\Car\FilterCarsRequest;
 
 class CarController extends Controller
 {
@@ -31,7 +31,7 @@ class CarController extends Controller
     {
         $filters = $request->validated();
         $query = (new filterCarService)->getFilteredCarsQuery($filters);
-        $cars = $query->get();
+        $cars = $query->active()->get();
         $count = $cars->count();
         return response()->json([
             "key" => "success",
@@ -44,7 +44,7 @@ class CarController extends Controller
     public function show($id)
     {
         $car = Car::find($id);
-        if (!$car || $car->status == Status::SOLD->value) {
+        if (!$car || $car->status == Status::SOLD->value || $car->expiry_status == 'expired') {
             return $this->failureResponse('هذه السيارة غير موجودة او تم بيعها');
         }
         return $this->successWithDataResponse(new CarDetailsResource($car));
@@ -52,7 +52,8 @@ class CarController extends Controller
 
     public function store(StoreCarRequest $request)
     {
-        if (!$this->subscriptionService->canPostCarAd(auth('client')->user())) {
+        $postInfo = $this->subscriptionService->canPostCarAd(auth('client')->user());
+        if (!$postInfo['can_post']) {
             return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
         }
 
@@ -60,10 +61,10 @@ class CarController extends Controller
         $files = $request->file('images');
 
         try {
-            $this->carService->createCarWithImages($validatedData, $files);
+            $this->carService->createCarWithImages($validatedData, $files, $postInfo['expires_in_days']);
             return $this->successResponse('تم اضافة السيارة بنجاح');
         } catch (\Exception $e) {
-            return $this->failureResponse('حدث خطأ أثناء إضافة السيارة: ');
+            return $this->failureResponse('حدث خطأ أثناء إضافة السيارة: ' . $e->getMessage());
         }
     }
 

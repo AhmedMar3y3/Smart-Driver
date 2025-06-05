@@ -6,16 +6,21 @@ use App\Models\Car;
 use App\Helpers\ImageUploadHelper;
 use App\Traits\HttpResponses;
 use Illuminate\Http\UploadedFile;
+use Carbon\Carbon;
 
 class StoreCarService
 {
     use HttpResponses;
 
-    public function createCarWithImages(array $validatedData, array $files): Car
+    public function createCarWithImages(array $validatedData, array $files, int $expiresInDays): Car
     {
         $client = Auth('client')->user();
 
-        $car = Car::create($validatedData + ['client_id' => $client->id]);
+        $car = Car::create($validatedData + [
+            'client_id' => $client->id,
+            'expires_at' => Carbon::now()->addDays($expiresInDays),
+            'expiry_status' => 'active'
+        ]);
 
         $data = [];
         foreach ($files as $file) {
