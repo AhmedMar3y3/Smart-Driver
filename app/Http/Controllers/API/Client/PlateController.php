@@ -48,9 +48,9 @@ class PlateController extends Controller
     {
         $client = Auth('client')->user();
         try {
-            // if (!$this->subscriptionService->canPostPlateAd($client)) {
-            //     return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
-            // }
+            if (!$this->subscriptionService->canPostPlateAd($client)) {
+                return $this->failureResponse('تخطيت الحد الأقصي للأضافة أو يجب عليك الاشتراك في باقة لاضافة لوحة جديدة');
+            }
             Plate::create($request->validated() + ['client_id' => $client->id]);
             return $this->successResponse('تم اضافة اللوحة بنجاح');
         } catch (Exception $e) {

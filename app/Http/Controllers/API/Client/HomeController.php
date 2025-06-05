@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\API\Client\CarPackageResource;
 use App\Http\Resources\API\Client\PlatePackageResource;
 use App\Http\Resources\API\Client\QuestionPackageResource;
+use App\Http\Resources\API\Client\RandomReviewsResource;
+use App\Models\CaptainReview;
 use App\Models\QuestionPackage;
 
 class HomeController extends Controller
@@ -37,5 +39,11 @@ class HomeController extends Controller
     {
         $packages = QuestionPackage::all();
         return $this->successWithDataResponse(QuestionPackageResource::collection($packages));
+    }
+
+    public function randomReviews()
+    {
+        $reviews = CaptainReview::inRandomOrder()->take(10)->get();
+        return $this->successWithDataResponse(RandomReviewsResource::collection($reviews));
     }
 }
