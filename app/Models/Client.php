@@ -49,10 +49,11 @@ class Client extends Authenticatable
     public function sendVerificationCode()
     {
         $this->update([
-            'code' => random_int(100000, 999999),
+            'code'=>123456,
+            // 'code' => random_int(100000, 999999),
         ]);
 
-         (new SendVerificationCodeService())->sendCodeToUser($this);
+        //  (new SendVerificationCodeService())->sendCodeToUser($this);
     }
 
      public function markAsVerified()
