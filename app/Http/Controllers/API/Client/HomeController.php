@@ -13,6 +13,7 @@ use App\Http\Resources\API\Client\QuestionPackageResource;
 use App\Http\Resources\API\Client\RandomReviewsResource;
 use App\Models\CaptainReview;
 use App\Models\QuestionPackage;
+use App\Models\Section;
 
 class HomeController extends Controller
 {
@@ -45,5 +46,14 @@ class HomeController extends Controller
     {
         $reviews = CaptainReview::inRandomOrder()->take(9)->get();
         return $this->successWithDataResponse(RandomReviewsResource::collection($reviews));
+    }
+
+    public function getSectionsByName($name)
+    {
+        $section = Section::where('name', $name)->get();
+        if (!$section) {
+            return $this->failureResponse('القسم غير موجود');
+        }
+        return $this->successWithDataResponse($section);
     }
 }

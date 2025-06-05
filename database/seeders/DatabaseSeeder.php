@@ -16,10 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
         //    BrandTableSeeder::class,
-            EmiratesTableSeeder::class,
-            CategorySeeder::class,
-            PackageSeeder::class,
-            PlateCodeSeeder::class,
+            // EmiratesTableSeeder::class,
+            // CategorySeeder::class,
+            // PackageSeeder::class,
+            // PlateCodeSeeder::class,
+            SectionSeeder::class,
         ]);
     }
 }

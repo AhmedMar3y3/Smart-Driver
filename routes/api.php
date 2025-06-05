@@ -19,6 +19,7 @@ Route::get('brands',        [Controller::class, 'brands']);
 Route::get('categories',    [Controller::class, 'categories']);
 Route::get('hero',          [HomeController::class, 'getHero']);
 Route::get('random-reviews',[HomeController::class, 'randomReviews']);
+Route::get('section/{name}',[HomeController::class, 'getSectionsByName']);
 Route::middleware(['set-locale'])->group(function () {
     Route::get('car-packages',  [HomeController::class, 'carPackages']);
     Route::get('plate-packages', [HomeController::class, 'platePackages']);

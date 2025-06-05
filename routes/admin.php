@@ -8,6 +8,7 @@ use App\Http\Controllers\API\Admin\PlateController;
 use App\Http\Controllers\API\Admin\BrandsController;
 use App\Http\Controllers\API\Admin\PackageController;
 use App\Http\Controllers\API\Admin\CaptainController;
+use App\Http\Controllers\API\Admin\SectionsController;
 use App\Http\Controllers\API\Admin\QuestionPackageController;
 
 Route::post('register',[AuthController::class, 'register']);
@@ -49,5 +50,9 @@ Route::middleware(['auth.admin', 'set-locale'])->group(function () {
     Route::get('question-packages/{id}',   [QuestionPackageController::class, 'show']);
     Route::post('question-packages',       [QuestionPackageController::class, 'store']);
     Route::delete('question-packages/{id}',[QuestionPackageController::class, 'destroy']);
+
+    // section routes
+    Route::get('sections',      [SectionsController::class, 'index']);
+    Route::post('sections/{id}',[SectionsController::class, 'update']);
 
 });

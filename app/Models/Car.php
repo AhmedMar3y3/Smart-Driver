@@ -26,6 +26,7 @@ class Car extends Model
         'brand_id',
         'client_id',
         'category_id',
+        'subscription_id',
     ];
     protected $casts = [
         'type' => CarType::class,
@@ -50,5 +51,10 @@ class Car extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
     }
 }

@@ -52,9 +52,7 @@ class CarController extends Controller
 
     public function store(StoreCarRequest $request)
     {
-        $client = auth('client')->user();
-
-        if (!$this->subscriptionService->canPostCarAd($client)) {
+        if (!$this->subscriptionService->canPostCarAd(auth('client')->user())) {
             return $this->failureResponse('تخطيت الحد الأقصي للأضافة');
         }
 
