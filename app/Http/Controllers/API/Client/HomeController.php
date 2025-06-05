@@ -43,7 +43,7 @@ class HomeController extends Controller
 
     public function randomReviews()
     {
-        $reviews = CaptainReview::inRandomOrder()->take(10)->get();
+        $reviews = CaptainReview::inRandomOrder()->take(9)->get();
         return $this->successWithDataResponse(RandomReviewsResource::collection($reviews));
     }
 }
