@@ -22,12 +22,14 @@ class SubscriptionController extends Controller
     {
         $client = auth('client')->user();
         $packageId = $request->input('package_id');
+        $successUrl = $request->input('success_url');
+        $errorUrl = $request->input('error_url');
         if (!$packageId) {
             return $this->failureResponse('معرف الحزمة مطلوب.');
         }
 
         try {
-            $subscription = $this->subscriptionService->subscribe($client, $packageId);
+            $subscription = $this->subscriptionService->subscribe($client, $packageId, $successUrl, $errorUrl);
             return $this->successWithDataResponse([
                 'invoice_url' => $subscription->invoice_url,
                 'subscription_id' => $subscription->id,

@@ -15,7 +15,7 @@ class QuestionSubscriptionService
         $this->paymentService = $paymentService;
     }
 
-    public function subscribe($client, $packageId)
+    public function subscribe($client, $packageId, $successUrl = null, $errorUrl = null)
     {
         $package = QuestionPackage::find($packageId);
         if (!$package) {
@@ -35,8 +35,8 @@ class QuestionSubscriptionService
 
         $paymentData = $this->paymentService->initiatePayment(
             $subscription,
-            config('MyFatoorah.front_end_success_url'),
-            config('MyFatoorah.front_end_error_url'),
+            $successUrl,
+            $errorUrl,
             'question.payment.callback',
             'question.payment.error'
         );
