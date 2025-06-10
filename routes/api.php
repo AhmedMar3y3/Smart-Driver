@@ -52,6 +52,9 @@ Route::get('/captains/{id}', [ReservationController::class, 'captain']);
 Route::get('/availabilities/{id}', [ReservationController::class, 'captainAvailabilities']);
 Route::get('/captain-reviews/{id}', [ReservationController::class, 'captainReviews']);
 
+// Join Routes
+Route::post('/join',  [JoinController::class, 'join']);
+
 Route::middleware(['auth.client'])->group(function () {
     Route::post('/logout',              [AuthController::class, 'logout']);
 
@@ -72,8 +75,6 @@ Route::middleware(['auth.client'])->group(function () {
     Route::post('/plates',                  [PlateController::class, 'store']);
     Route::get('/plate-codes/{emirate_id}', [PlateController::class, 'getPlateCodes']);
 
-    // Join Routes
-    Route::post('/join',  [JoinController::class, 'join']);
 
     // Reservation Routes
     Route::post('/reserve-captain', [ReservationController::class, 'reserveCaptain']);
