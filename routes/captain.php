@@ -14,6 +14,11 @@ use App\Http\Controllers\API\Captain\SubscriptionController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login',    [AuthController::class, 'login']);
 
+// Password reset routes
+Route::post('/send-code',           [AuthController::class, 'sendCode']);
+Route::post('/check-code',          [AuthController::class, 'checkCode']);
+Route::post('/reset-password',      [AuthController::class, 'resetPassword']);
+
 Route::middleware(['auth.captain','set-locale'])->group(function () {
     Route::post('logout',       [AuthController::class, 'logout']);
     Route::post('/refresh',     [AuthController::class, 'refresh']);
