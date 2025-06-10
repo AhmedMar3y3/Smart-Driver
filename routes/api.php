@@ -6,6 +6,7 @@ use App\Http\Controllers\API\Client\CarController;
 use App\Http\Controllers\API\Client\AuthController;
 use App\Http\Controllers\API\Client\HomeController;
 use App\Http\Controllers\API\Client\ExamController;
+use App\Http\Controllers\API\Client\JoinController;
 use App\Http\Controllers\API\Client\PlateController;
 use App\Http\Controllers\API\Client\ReviewController;
 use App\Http\Controllers\API\Client\ProfileController;
@@ -18,13 +19,12 @@ Route::get('emirates',      [Controller::class, 'emirates']);
 Route::get('brands',        [Controller::class, 'brands']);
 Route::get('categories',    [Controller::class, 'categories']);
 Route::get('hero',          [HomeController::class, 'getHero']);
-Route::get('random-reviews',[HomeController::class, 'randomReviews']);
-Route::get('section/{name}',[HomeController::class, 'getSectionsByName']);
+Route::get('random-reviews', [HomeController::class, 'randomReviews']);
+Route::get('section/{name}', [HomeController::class, 'getSectionsByName']);
 Route::middleware(['set-locale'])->group(function () {
     Route::get('car-packages',  [HomeController::class, 'carPackages']);
     Route::get('plate-packages', [HomeController::class, 'platePackages']);
     Route::get('question-packages', [HomeController::class, 'questionPackages']);
-
 });
 
 // Auth routes
@@ -68,12 +68,12 @@ Route::middleware(['auth.client'])->group(function () {
     Route::get('my-attempts',       [ProfileController::class, 'myAttempets']);
 
     // protected car and plate routes
-    Route::post('/cars',       [CarController::class, 'store']);
-    Route::post('/plates',     [PlateController::class, 'store']);
+    Route::post('/cars',                    [CarController::class, 'store']);
+    Route::post('/plates',                  [PlateController::class, 'store']);
     Route::get('/plate-codes/{emirate_id}', [PlateController::class, 'getPlateCodes']);
 
-    // Subscription Routes
-    Route::post('/subscribe',  [SubscriptionController::class, 'subscribe']);
+    // Join Routes
+    Route::post('/join',  [JoinController::class, 'join']);
 
     // Reservation Routes
     Route::post('/reserve-captain', [ReservationController::class, 'reserveCaptain']);
