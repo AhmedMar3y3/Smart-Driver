@@ -21,6 +21,8 @@ class Captain extends Authenticatable
         'completed_info',
         'rating',
         'views_count',
+        'code',
+        'is_code'
     ];
 
     protected $casts = [
@@ -38,6 +40,25 @@ class Captain extends Authenticatable
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::make($password);
+    }
+
+    public function sendVerificationCodeForCaptain()
+    {
+        $this->update([
+            'code' => 123456,
+            // 'code' => random_int(100000, 999999),
+        ]);
+
+        //  (new SendVerificationCodeService())->sendCodeToUser($this);
+    }
+
+    public function updatePassword($password)
+    {
+        $this->update([
+            'password' => $password,
+            'code' => null,
+            'is_code' => false,
+        ]);
     }
 
     public function reservations()
@@ -76,6 +97,6 @@ class Captain extends Authenticatable
 
     public function isSubscribed()
     {
-        return $this->subscriptions()->where('status','active')->exists();
+        return $this->subscriptions()->where('status', 'active')->exists();
     }
 }

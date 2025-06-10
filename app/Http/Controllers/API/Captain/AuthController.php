@@ -10,6 +10,9 @@ use App\Http\Resources\API\Captain\AuthResource;
 use App\Http\Resources\API\Captain\RegisterResource;
 use App\Http\Requests\API\Captain\Captain\LoginCaptainRequest;
 use App\Http\Requests\API\Captain\Captain\RegisterCaptainRequest;
+use App\Http\Requests\API\Captain\Password\ResetPasswordRequest;
+use App\Http\Requests\API\Captain\Password\ResetPasswordSendCodeRequest;
+use App\Http\Requests\API\Captain\Password\ResetPasswordCheckCodeRequest;
 
 class AuthController extends Controller
 {
@@ -51,5 +54,44 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return $this->failureResponse('فشل تحديث التوكن: ' . $e->getMessage());
         }
+    }
+
+    public function sendCode(ResetPasswordSendCodeRequest $request)
+    {
+        $user = Captain::where('email', $request->email)->first();
+        $user->sendVerificationCodeForCaptain();
+        return $this->successResponse();
+    }
+
+    public function checkCode(ResetPasswordCheckCodeRequest $request)
+    {
+        $user = Captain::where('email', $request->email)->first();
+
+        if ($user->code !== $request->code) {
+            return $this->failureResponse('كود غير صحيح');
+        }
+
+        $user->update([
+            'is_code'   => true,
+        ]);
+
+        return $this->successResponse();
+    }
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $user = Captain::where('email', $request->email)->first();
+
+        if ($user->code !== $request->code) {
+            return $this->failureResponse('كود غير صحيح');
+        }
+
+        if (! $user->is_code) {
+            return $this->failureResponse('يرجي ارسال كود التفعيل');
+        }
+
+        $user->updatePassword($request->password);
+
+        return $this->successResponse('تم تغيير كلمة المرور بنجاح');
     }
 }
