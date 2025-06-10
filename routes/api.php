@@ -32,6 +32,11 @@ Route::post('/register',            [AuthController::class, 'register']);
 Route::post('/verify-email',        [AuthController::class, 'verifyEmail']);
 Route::post('/login',               [AuthController::class, 'login']);
 
+// Password reset routes
+Route::post('/send-code',           [AuthController::class, 'sendCode']);
+Route::post('/check-code',          [AuthController::class, 'checkCode']);
+Route::post('/reset-password',      [AuthController::class, 'resetPassword']);
+
 // car routes
 Route::get('/cars',      [CarController::class, 'index']);
 Route::get('/cars/{id}', [CarController::class, 'show']);

@@ -11,6 +11,9 @@ use App\Http\Resources\API\Client\AuthResource;
 use App\Http\Requests\API\Client\Client\LoginClientRequest;
 use App\Http\Requests\API\Client\Client\VerifyClientRequest;
 use App\Http\Requests\API\Client\Client\RegisterClientRequest;
+use App\Http\Requests\API\Client\Password\ResetPasswordSendCodeRequest;
+use App\Http\Requests\API\Client\Password\ResetPasswordCheckCodeRequest;
+use App\Http\Requests\API\Client\Password\ResetPasswordRequest;
 
 
 class AuthController extends Controller
@@ -23,7 +26,7 @@ class AuthController extends Controller
         return $this->successWithDataResponse(AuthResource::make($client));
     }
 
-     public function verifyEmail(VerifyClientRequest $request)
+    public function verifyEmail(VerifyClientRequest $request)
     {
         $client = Client::where('email', $request->email)->first();
 
@@ -48,34 +51,6 @@ class AuthController extends Controller
         return $this->successWithDataResponse(AuthResource::make($client)->setToken($client->login()));
     }
 
-
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')->stateless()->redirect();
-    }
-
-    public function handleGoogleCallback()
-    {
-        try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
-            $client = Client::where('email', $googleUser->email)->first();
-
-            if (!$client) {
-                $client = Client::createWithGoogle([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'avatar' => $googleUser->avatar,
-                ]);
-            }
-
-            $token = $client->createToken('client-token')->plainTextToken;
-
-            return $this->successWithDataResponse(AuthResource::make($client)->setToken($token));
-        } catch (\Exception $e) {
-            return $this->failureResponse('فشل تسجيل الدخول بواسطة جوجل: ' . $e->getMessage());
-        }
-    }
-
     public function logout()
     {
         try {
@@ -85,5 +60,44 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return $this->failureResponse('فشل تسجيل الخروج: ' . $e->getMessage());
         }
+    }
+
+    public function sendCode(ResetPasswordSendCodeRequest $request)
+    {
+        $user = Client::where('email', $request->email)->first();
+        $user->sendVerificationCode();
+        return $this->successResponse();
+    }
+
+    public function checkCode(ResetPasswordCheckCodeRequest $request)
+    {
+        $user = Client::where('email', $request->email)->first();
+
+        if ($user->code !== $request->code) {
+            return $this->failureResponse('كود غير صحيح');
+        }
+
+        $user->update([
+            'is_code'   => true,
+        ]);
+
+        return $this->successResponse();
+    }
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $user = Client::where('email', $request->email)->first();
+
+        if ($user->code !== $request->code) {
+            return $this->failureResponse('كود غير صحيح');
+        }
+
+        if (! $user->is_code) {
+            return $this->failureResponse('يرجي ارسال كود التفعيل');
+        }
+
+        $user->updatePassword($request->password);
+
+        return $this->successResponse('تم تغيير كلمة المرور بنجاح');
     }
 }

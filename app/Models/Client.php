@@ -24,6 +24,7 @@ class Client extends Authenticatable
         'subscription_type',
         'is_verified',
         'code',
+        'is_code'
     ];
 
     protected $hidden = [
@@ -49,14 +50,23 @@ class Client extends Authenticatable
     public function sendVerificationCode()
     {
         $this->update([
-            'code'=>123456,
+            'code' => 123456,
             // 'code' => random_int(100000, 999999),
         ]);
 
         //  (new SendVerificationCodeService())->sendCodeToUser($this);
     }
 
-     public function markAsVerified()
+     public function updatePassword($password)
+    {
+        $this->update([
+            'password' => $password,
+            'code' => null,
+            'is_code' => false,
+        ]);
+    }
+
+    public function markAsVerified()
     {
         $this->update([
             'is_verified' => true,
@@ -118,5 +128,4 @@ class Client extends Authenticatable
     {
         return $this->questionSubscriptions()->where('status', 'completed')->where('question_package_id', $packageId)->exists();
     }
-
 }
