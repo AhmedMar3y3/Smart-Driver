@@ -18,8 +18,12 @@ class PackageResource extends JsonResource
             'id' => $this->id,
             'price' => $this->price,
             'type' => $this->type,
-            'title' => $this->title,
-            'description' => $this->description,
+            'title_ar' => $this->getTranslation('ar')->title ?? null,
+            'title_en' => $this->getTranslation('en')->title ?? null,
+            'title_ur' => $this->getTranslation('ur')->title ?? null,
+            'description_ar' => $this->getTranslation('ar')->description ?? null,
+            'description_en' => $this->getTranslation('en')->description ?? null,
+            'description_ur' => $this->getTranslation('ur')->description ?? null,
         ];
     }
 }
