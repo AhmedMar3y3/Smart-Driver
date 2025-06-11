@@ -16,8 +16,10 @@ class StoreHeroRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'title' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10248',
+            'title_ar' => 'nullable|string|max:255',
+            'title_en' => 'nullable|string|max:255',
+            'title_ur' => 'nullable|string|max:255',
+            'image'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10248',
         ];
     }
 }

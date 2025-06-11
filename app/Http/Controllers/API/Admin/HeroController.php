@@ -13,7 +13,7 @@ class HeroController extends Controller
 
     public function getHero()
     {
-        $hero = Hero::first(['id', 'title', 'image']);
+        $hero = Hero::first(['id', 'title_ar', 'title_en', 'title_ur', 'image']);
         return $this->successWithDataResponse($hero);
     }
 

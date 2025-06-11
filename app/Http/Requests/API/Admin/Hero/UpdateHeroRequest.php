@@ -14,8 +14,10 @@ class UpdateHeroRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10248',
+            'title_ar' => 'nullable|string|max:255',
+            'title_en' => 'nullable|string|max:255',
+            'title_ur' => 'nullable|string|max:255',
+            'image'    => 'required|image|mimes:jpeg,png,jpg,gif|max:10248',
         ];
     }
 }

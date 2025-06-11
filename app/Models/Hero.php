@@ -11,7 +11,9 @@ class Hero extends Model
     use HasFactory, HasImage;
 
     protected $fillable = [
-        'title',
+        'title_ar',
+        'title_en',
+        'title_ur',
         'image',
     ];
 }
