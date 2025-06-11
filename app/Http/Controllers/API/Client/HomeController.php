@@ -8,6 +8,7 @@ use App\Enums\PackageType;
 use App\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\Client\CarPackageResource;
+use App\Http\Resources\API\Client\HeroResource;
 use App\Http\Resources\API\Client\PlatePackageResource;
 use App\Http\Resources\API\Client\QuestionPackageResource;
 use App\Http\Resources\API\Client\RandomReviewsResource;
@@ -20,8 +21,8 @@ class HomeController extends Controller
     use HttpResponses;
     public function getHero()
     {
-        $hero = Hero::get(['id', 'title', 'image']);
-        return $this->successWithDataResponse($hero);
+        $hero = Hero::get(['id', 'title_ar', 'title_en', 'title_ur', 'image']);
+        return $this->successWithDataResponse(HeroResource::collection($hero));
     }
 
     public function carPackages()
