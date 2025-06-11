@@ -53,6 +53,7 @@ Route::middleware(['auth.admin', 'set-locale'])->group(function () {
 
     // section routes
     Route::get('sections',      [SectionsController::class, 'index']);
+    Route::get('sections/{id}', [SectionsController::class, 'show']);
     Route::post('sections/{id}',[SectionsController::class, 'update']);
 
 });

@@ -16,6 +16,15 @@ class SectionsController extends Controller
         return $this->successWithDataResponse($sections);
     }
 
+    public function show($id)
+    {
+        $section = Section::find($id);
+        if (!$section) {
+            return $this->failureResponse('القسم غير موجود');
+        }
+        return $this->successWithDataResponse($section);
+    }
+
     public function update(UpdateSectionRequest $request, $id)
     {
         $section = Section::find($id);

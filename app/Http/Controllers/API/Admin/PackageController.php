@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\API\Admin\PackageResource;
 use App\Http\Requests\API\Admin\Package\StorePackageRequest;
 use App\Http\Requests\API\Admin\Package\UpdatePackageRequest;
+use App\Http\Resources\API\Admin\DetailedPackageResource;
 
 class PackageController extends Controller
 {
@@ -21,7 +22,7 @@ class PackageController extends Controller
 
     public function show(Package $package)
     {
-        return $this->successWithDataResponse(new PackageResource($package));
+        return $this->successWithDataResponse(new DetailedPackageResource($package));
     }
 
     public function store(StorePackageRequest $request)
